@@ -2,7 +2,7 @@
 * A Rust library for trading on crypto exchanges. Super simple to use.
 * Unified API for different exchanges. Supported exchanges:
   * [Bybit](https://www.bybit.com/invite?ref=XNYP2K).
-  * [Okx](https://www.okx.com/join/47636709).
+  * [OKX](https://www.okx.com/join/47636709).
   * Many more coming soon.
 * For any questions, contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5.
 * We provide end-to-end development services for crypto trading infrastructures, covering everything from integration and strategy implementation to real-time data handling and execution.
@@ -11,12 +11,12 @@
 Add this to your `Cargo.toml`
 ```toml
 [dependencies]
-ccrs = { git = "https://github.com/the-crypto-connect/ccrs.git" }
+ccrs = { git = "https://github.com/the-ccrs/ccrs.git" }
 ```
 The default main branch may include experimental or in-progress features. For a stable experience, please use specific tags.
 ```toml
 [dependencies]
-ccrs = { git = "https://github.com/the-crypto-connect/ccrs.git", tag = "v1.2.3" }
+ccrs = { git = "https://github.com/the-ccrs/ccrs.git", tag = "v1.2.3" }
 ```
 
 ## Documentation
