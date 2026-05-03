@@ -1,5 +1,3 @@
-// cargo run --example enable_library_logging --features max_log_level_finest
-
 use ccrs::exchange_client::common::GetInstrumentInfoRequest;
 use ccrs::exchange_client::common::Request;
 use ccrs::exchange_client::rest::Rest;

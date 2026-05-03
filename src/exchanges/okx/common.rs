@@ -1,4 +1,4 @@
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 pub struct OkxCredential {
     pub api_key: String,
     pub api_secret: String,
@@ -14,6 +14,7 @@ pub struct OkxClient {
     pub(super) inst_type_str: String,
     pub(super) td_mode: String,
     pub(super) credential: Option<OkxCredential>,
+    pub(super) api_broker_code: String,
     pub(super) use_demo_trading: bool,
 }
 
@@ -294,6 +295,7 @@ impl OkxClientBuilder {
             inst_type_str,
             td_mode,
             credential: self.credential,
+            api_broker_code: "9cbc6a17a1fcBCDE".to_string(),
             use_demo_trading,
         }
     }

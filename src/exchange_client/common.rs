@@ -93,6 +93,7 @@ pub enum Response {
     FillSubscription(FillSubscriptionData),
     WebSocketWriteError(anyhow::Error),
     WebSocketReadError(anyhow::Error),
+    WebSocketPingMessage(bytes::Bytes),
     WebSocketPongMessage(bytes::Bytes),
     WebSocketHeartbeatMessage(crate::networking::websocket::WebSocketText),
     WebSocketCloseMessage(Option<tokio_tungstenite::tungstenite::protocol::CloseFrame>),

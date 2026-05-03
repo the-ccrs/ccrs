@@ -48,6 +48,7 @@ pub enum Exchange {
     Unknown,
     Bybit,
     Okx,
+    BinanceSpot,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -76,6 +77,7 @@ pub enum ExchangeInstrumentType {
     Unknown,
     Bybit(BybitInstrumentType),
     Okx(OkxInstrumentType),
+    BinanceSpot,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -95,11 +97,20 @@ pub enum OkxWebSocketEndpoint {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum BinanceSpotWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum WebSocketEndpoint {
     #[default]
     Unknown,
     Bybit(BybitWebSocketEndpoint),
     Okx(OkxWebSocketEndpoint),
+    BinanceSpot(BinanceSpotWebSocketEndpoint),
 }
 
 #[derive(Debug, Clone, Default)]
@@ -128,6 +139,18 @@ impl WebSocketClientConfig {
 
     pub fn okx_account_data() -> Self {
         Self::new(WebSocketEndpoint::Okx(OkxWebSocketEndpoint::AccountData))
+    }
+
+    pub fn binance_spot_market_data() -> Self {
+        Self::new(WebSocketEndpoint::BinanceSpot(
+            BinanceSpotWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn binance_spot_account_data() -> Self {
+        Self::new(WebSocketEndpoint::BinanceSpot(
+            BinanceSpotWebSocketEndpoint::AccountData,
+        ))
     }
 }
 

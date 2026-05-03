@@ -112,6 +112,11 @@ pub trait Websocket {
         websocket_text: &crate::networking::websocket::WebSocketText,
     ) -> bool;
 
+    fn is_unexpected_websocket_text_subscription_data_benign(
+        &self,
+        websocket_text: &crate::networking::websocket::WebSocketText,
+    ) -> bool;
+
     fn create_subscribe_top_of_book_websocket_subscription_data(
         &self,
         websocket_text: &crate::networking::websocket::WebSocketText,

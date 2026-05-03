@@ -82,6 +82,13 @@ impl crate::exchange_client::websocket::Websocket for crate::exchanges::bybit::c
     panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
 }
 
+    fn is_unexpected_websocket_text_subscription_data_benign(
+        &self,
+        _: &crate::networking::websocket::WebSocketText,
+    ) -> bool {
+    panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
+}
+
     fn create_subscribe_top_of_book_websocket_subscription_data(
         &self,
         websocket_text: &crate::networking::websocket::WebSocketText,

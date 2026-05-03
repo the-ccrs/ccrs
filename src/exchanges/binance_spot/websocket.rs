@@ -1,5 +1,7 @@
 #[async_trait::async_trait]
-impl crate::exchange_client::websocket::Websocket for crate::exchanges::okx::common::OkxClient {
+impl crate::exchange_client::websocket::Websocket
+    for crate::exchanges::binance_spot::common::BinanceSpotClient
+{
     fn websocket_api_url(&self, endpoint: crate::types::WebSocketEndpoint) -> String {
     panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
 }
@@ -77,13 +79,6 @@ impl crate::exchange_client::websocket::Websocket for crate::exchanges::okx::com
 
     fn is_websocket_text_fill_subscription_data(
         &self,
-        websocket_text: &crate::networking::websocket::WebSocketText,
-    ) -> bool {
-    panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
-}
-
-    fn is_unexpected_websocket_text_subscription_data_benign(
-        &self,
         _: &crate::networking::websocket::WebSocketText,
     ) -> bool {
     panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
@@ -112,8 +107,15 @@ impl crate::exchange_client::websocket::Websocket for crate::exchanges::okx::com
 
     fn create_subscribe_fill_websocket_subscription_data(
         &self,
-        websocket_text: &crate::networking::websocket::WebSocketText,
+        _: &crate::networking::websocket::WebSocketText,
     ) -> crate::exchange_client::common::Response {
+    panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
+}
+
+    fn is_unexpected_websocket_text_subscription_data_benign(
+        &self,
+        websocket_text: &crate::networking::websocket::WebSocketText,
+    ) -> bool {
     panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
 }
 
@@ -140,28 +142,28 @@ impl crate::exchange_client::websocket::Websocket for crate::exchanges::okx::com
 
     fn is_websocket_text_heartbeat_response(
         &self,
-        websocket_text: &crate::networking::websocket::WebSocketText,
+        _websocket_text: &crate::networking::websocket::WebSocketText,
     ) -> bool {
     panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
 }
 
     fn create_authenticate_websocket_response(
         &self,
-        _websocket_text: &crate::networking::websocket::WebSocketText,
+        websocket_text: &crate::networking::websocket::WebSocketText,
     ) -> crate::exchange_client::common::Response {
     panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
 }
 
     fn create_subscribe_websocket_response(
         &self,
-        _websocket_text: &crate::networking::websocket::WebSocketText,
+        websocket_text: &crate::networking::websocket::WebSocketText,
     ) -> crate::exchange_client::common::Response {
     panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
 }
 
     fn create_heartbeat_websocket_response(
         &self,
-        _websocket_text: &crate::networking::websocket::WebSocketText,
+        websocket_text: &crate::networking::websocket::WebSocketText,
     ) -> crate::exchange_client::common::Response {
     panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
 }
@@ -170,15 +172,6 @@ impl crate::exchange_client::websocket::Websocket for crate::exchanges::okx::com
         &self,
         websocket_text: &crate::networking::websocket::WebSocketText,
     ) -> crate::exchange_client::common::Response {
-    panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
-}
-}
-
-#[cfg(test)]
-mod tests {
-
-    #[test]
-    fn test_create_subscribe_fill_websocket_subscription_data() {
     panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
 }
 }

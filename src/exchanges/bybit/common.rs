@@ -1,4 +1,4 @@
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 pub struct BybitCredential {
     pub api_key: String,
     pub api_secret: String,

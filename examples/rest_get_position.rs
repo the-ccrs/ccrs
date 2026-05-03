@@ -11,11 +11,11 @@ use ccrs::utils::get_env_as_string;
 
 #[tokio::main]
 async fn main() {
-    let api_key = get_env_as_string("API_KEY", "");
-    let api_secret = get_env_as_string("API_SECRET", "");
+    let api_key = get_env_as_string("BYBIT_API_KEY", "");
+    let api_secret = get_env_as_string("BYBIT_API_SECRET", "");
 
     if api_key.is_empty() || api_secret.is_empty() {
-        panic!("API_KEY and API_SECRET must be set");
+        panic!("BYBIT_API_KEY and BYBIT_API_SECRET must be set");
     }
 
     let credential = BybitCredential {
@@ -48,7 +48,7 @@ async fn main() {
         .send_http_request(
             &http_client,
             Request::GetPosition(GetPositionRequest {
-                settle_asset: get_env_as_string("SETTLE_ASSET", ""),
+                settle_asset: get_env_as_string("SETTLE_ASSET", "USDT"),
                 ..Default::default()
             }),
         )

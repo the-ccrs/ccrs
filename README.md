@@ -1,6 +1,7 @@
 # ccrs
 * A Rust library for trading on crypto exchanges. Super simple to use.
 * Unified API for different exchanges. Supported exchanges:
+  * [Binance](https://accounts.maxweb.black/register?ref=1116718520)
   * [Bybit](https://www.bybit.com/invite?ref=XNYP2K).
   * [OKX](https://www.okx.com/join/47636709).
   * Many more coming soon.
@@ -21,16 +22,19 @@ ccrs = { git = "https://github.com/the-ccrs/ccrs.git", tag = "v1.2.3" }
 
 ## Documentation
 Our documentation is centered around comprehensive, real-world examples that demonstrate how to use each feature in practice.
-* [REST market data](examples/rest_market_data.rs)
-* [REST order execution](examples/rest_order_execution.rs)
-* [REST get position](examples/rest_get_position.rs)
-* [REST get balance](examples/rest_get_balance.rs)
-* [WebSocket subscribe top of book](examples/websocket_subscribe_top_of_book.rs)
-* [WebSocket subscribe trade](examples/websocket_subscribe_trade.rs)
-* [WebSocket subscribe order](examples/websocket_subscribe_order.rs)
-* [WebSocket subscribe fill](examples/websocket_subscribe_fill.rs)
-* [Enable library logging](examples/enable_library_logging.rs)
-* [Connect to proxy](examples/connect_to_proxy.rs)
+
+* [REST market data](examples/rest_market_data.rs) — `cargo run --example rest_market_data`
+* [REST order execution](examples/rest_order_execution.rs) — `env USE_TESTNET=true BYBIT_API_KEY='...' BYBIT_API_SECRET='...' SYMBOL=BTCUSDT PRICE=50000 QUANTITY=0.001 cargo run --example rest_order_execution`
+* [REST get position](examples/rest_get_position.rs) — `env USE_TESTNET=true BYBIT_API_KEY='...' BYBIT_API_SECRET='...' cargo run --example rest_get_position`
+* [REST get balance](examples/rest_get_balance.rs) — `env USE_TESTNET=true BYBIT_API_KEY='...' BYBIT_API_SECRET='...' cargo run --example rest_get_balance`
+* [WebSocket subscribe top of book](examples/websocket_subscribe_top_of_book.rs) — `cargo run --example websocket_subscribe_top_of_book`
+* [WebSocket subscribe trade](examples/websocket_subscribe_trade.rs) — `cargo run --example websocket_subscribe_trade`
+* [WebSocket subscribe order](examples/websocket_subscribe_order.rs) — `env USE_TESTNET=true BYBIT_API_KEY='...' BYBIT_API_SECRET='...' cargo run --example websocket_subscribe_order`
+* [WebSocket subscribe fill](examples/websocket_subscribe_fill.rs) — `env USE_TESTNET=true BYBIT_API_KEY='...' BYBIT_API_SECRET='...' cargo run --example websocket_subscribe_fill`
+* [Enable library logging](examples/enable_library_logging.rs) — `cargo run --example enable_library_logging --features max_log_level_finest`
+* [Connect to proxy](examples/connect_to_proxy.rs) — `cargo run --example connect_to_proxy`
+
+More exchange specific examples can be found in the [`tests`](tests) directory.
 
 ## Philosophy
 > "Everything should be made as simple as possible, but not simpler."

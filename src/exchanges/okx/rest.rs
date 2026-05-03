@@ -153,6 +153,8 @@ impl crate::exchange_client::rest::Rest for crate::exchanges::okx::common::OkxCl
             );
         }
 
+        body_map.insert("tag".into(), serde_json::json!(self.api_broker_code));
+
         let body_value = serde_json::Value::Object(body_map);
 
         crate::networking::http::HttpRequest::new(

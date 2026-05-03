@@ -33,3 +33,19 @@ pub fn convert_unix_timestamp_milliseconds_to_timestamp(
         ),
     }
 }
+
+pub fn signing_key_from_pkcs8_pem(pem: &str) -> ed25519_dalek::SigningKey {
+    let b64 = pem
+        .trim()
+        .lines()
+        .filter(|l| !l.starts_with("-----"))
+        .collect::<Vec<_>>()
+        .join("");
+
+    let der =
+        base64::Engine::decode(&base64::engine::general_purpose::STANDARD, b64.as_bytes()).unwrap();
+
+    let seed_bytes: &[u8; 32] = der[16..48].try_into().unwrap();
+
+    ed25519_dalek::SigningKey::from_bytes(seed_bytes)
+}

@@ -188,7 +188,15 @@ pub trait Rest {
             http_request.path
         );
         crate::fine!("Headers: {:#?}", http_request.headers);
-        if let Some(payload) = http_request.payload.as_ref() {
+        if let Some(query_params) = http_request.query_params.as_ref() {
+            crate::fine!("Query params: {:#?}", query_params);
+        } else if let Some(query_string) = http_request.query_string.as_ref() {
+            crate::fine!("Query string: {:#?}", query_string);
+        }
+
+        if let Some(json_payload) = http_request.json_payload.as_ref() {
+            crate::fine!("Body: {:#?}", json_payload);
+        } else if let Some(payload) = http_request.payload.as_ref() {
             crate::fine!("Body: {:#?}", payload);
         }
 
