@@ -42,4 +42,4 @@ More exchange specific examples can be found in the [`tests`](tests) directory.
 
 ## Source Code Visibility
 * REST API source code is fully available.
-* WebSocket API source code is partially available. Full access can be obtained separately—please contact us at Telegram https://t.me/+NvPBKXi6kFNkYmE5.
+* WebSocket API source code is partially available. Full access can be obtained separately — please contact us at Telegram https://t.me/+NvPBKXi6kFNkYmE5.

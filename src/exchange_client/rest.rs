@@ -137,7 +137,7 @@ pub trait Rest {
             _ => panic!(),
         };
 
-        let http_response = match self.execute_http_request(http_client, http_request).await {
+        let http_response = match execute_http_request(http_client, http_request).await {
             Ok(http_response) => http_response,
             Err(err) => return crate::exchange_client::common::Response::HttpRequestError(err),
         };
@@ -172,45 +172,44 @@ pub trait Rest {
             _ => panic!(),
         }
     }
+}
 
-    async fn execute_http_request(
-        &self,
-        http_client: &crate::networking::http::HttpClient,
-        http_request: crate::networking::http::HttpRequest,
-    ) -> anyhow::Result<crate::networking::http::HttpResponse> {
-        let reqwest_request = http_request.to_request(http_client.client());
+pub async fn execute_http_request(
+    http_client: &crate::networking::http::HttpClient,
+    http_request: crate::networking::http::HttpRequest,
+) -> anyhow::Result<crate::networking::http::HttpResponse> {
+    let reqwest_request = http_request.to_request(http_client.client());
 
-        crate::fine!("=== HTTP REQUEST ===");
-        crate::fine!(
-            "{} {} {}",
-            http_request.method,
-            http_request.base_url,
-            http_request.path
-        );
-        crate::fine!("Headers: {:#?}", http_request.headers);
-        if let Some(query_params) = http_request.query_params.as_ref() {
-            crate::fine!("Query params: {:#?}", query_params);
-        } else if let Some(query_string) = http_request.query_string.as_ref() {
-            crate::fine!("Query string: {:#?}", query_string);
-        }
-
-        if let Some(json_payload) = http_request.json_payload.as_ref() {
-            crate::fine!("Body: {:#?}", json_payload);
-        } else if let Some(payload) = http_request.payload.as_ref() {
-            crate::fine!("Body: {:#?}", payload);
-        }
-
-        let reqwest_response = http_client.client().execute(reqwest_request).await?;
-
-        let http_response =
-            crate::networking::http::HttpResponse::from_response(reqwest_response, http_request)
-                .await;
-
-        crate::fine!("=== HTTP RESPONSE ===");
-        crate::fine!("Status: {}", http_response.status);
-        crate::fine!("Headers: {:#?}", http_response.headers);
-        crate::fine!("Body: {}", http_response.body);
-
-        Ok(http_response)
+    crate::fine!("=== HTTP REQUEST ===");
+    crate::fine!(
+        "{} {} {}",
+        http_request.method,
+        http_request.base_url,
+        http_request.path
+    );
+    crate::fine!("Headers: {:#?}", http_request.headers);
+    if let Some(query_params) = http_request.query_params.as_ref() {
+        crate::fine!("Query params: {:#?}", query_params);
     }
+    if let Some(query_string) = http_request.query_string.as_ref() {
+        crate::fine!("Query string: {:#?}", query_string);
+    }
+    if let Some(json_payload) = http_request.json_payload.as_ref() {
+        crate::fine!("Json payload: {:#?}", json_payload);
+    }
+    if let Some(payload) = http_request.payload.as_ref() {
+        crate::fine!("Payload: {:#?}", payload);
+    }
+
+    let reqwest_response = http_client.client().execute(reqwest_request).await?;
+
+    let http_response =
+        crate::networking::http::HttpResponse::from_response(reqwest_response, http_request).await;
+
+    crate::fine!("=== HTTP RESPONSE ===");
+    crate::fine!("Status: {}", http_response.status);
+    crate::fine!("Headers: {:#?}", http_response.headers);
+    crate::fine!("Body: {}", http_response.body);
+
+    Ok(http_response)
 }

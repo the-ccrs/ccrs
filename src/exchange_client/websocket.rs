@@ -26,7 +26,9 @@ pub trait Websocket {
     panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
 }
 
-    fn create_authenticate_websocket_request(&self) -> String;
+    fn create_authenticate_websocket_request(&self) -> String {
+    panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
+}
 
     fn create_heartbeat_websocket_request_factory(&self) -> Box<dyn Fn() -> String + Send> {
     panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");

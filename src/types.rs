@@ -49,6 +49,7 @@ pub enum Exchange {
     Bybit,
     Okx,
     BinanceSpot,
+    BinanceUsdsMarginedFutures,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -78,6 +79,7 @@ pub enum ExchangeInstrumentType {
     Bybit(BybitInstrumentType),
     Okx(OkxInstrumentType),
     BinanceSpot,
+    BinanceUsdsMarginedFutures,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -105,12 +107,21 @@ pub enum BinanceSpotWebSocketEndpoint {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum BinanceUsdsMarginedFuturesWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum WebSocketEndpoint {
     #[default]
     Unknown,
     Bybit(BybitWebSocketEndpoint),
     Okx(OkxWebSocketEndpoint),
     BinanceSpot(BinanceSpotWebSocketEndpoint),
+    BinanceUsdsMarginedFutures(BinanceUsdsMarginedFuturesWebSocketEndpoint),
 }
 
 #[derive(Debug, Clone, Default)]
@@ -150,6 +161,18 @@ impl WebSocketClientConfig {
     pub fn binance_spot_account_data() -> Self {
         Self::new(WebSocketEndpoint::BinanceSpot(
             BinanceSpotWebSocketEndpoint::AccountData,
+        ))
+    }
+
+    pub fn binance_usds_margined_futures_market_data() -> Self {
+        Self::new(WebSocketEndpoint::BinanceUsdsMarginedFutures(
+            BinanceUsdsMarginedFuturesWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn binance_usds_margined_futures_account_data() -> Self {
+        Self::new(WebSocketEndpoint::BinanceUsdsMarginedFutures(
+            BinanceUsdsMarginedFuturesWebSocketEndpoint::AccountData,
         ))
     }
 }
