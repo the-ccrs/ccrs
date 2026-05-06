@@ -50,6 +50,15 @@ pub enum Exchange {
     Okx,
     BinanceSpot,
     BinanceUsdsMarginedFutures,
+    GateioSpotAndMargin,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum GateioSpotAndMarginInstrumentType {
+    #[default]
+    Unknown,
+    Spot,
+    Margin,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -80,6 +89,7 @@ pub enum ExchangeInstrumentType {
     Okx(OkxInstrumentType),
     BinanceSpot,
     BinanceUsdsMarginedFutures,
+    GateioSpotAndMargin(GateioSpotAndMarginInstrumentType),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -115,6 +125,14 @@ pub enum BinanceUsdsMarginedFuturesWebSocketEndpoint {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum GateioSpotAndMarginWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum WebSocketEndpoint {
     #[default]
     Unknown,
@@ -122,6 +140,7 @@ pub enum WebSocketEndpoint {
     Okx(OkxWebSocketEndpoint),
     BinanceSpot(BinanceSpotWebSocketEndpoint),
     BinanceUsdsMarginedFutures(BinanceUsdsMarginedFuturesWebSocketEndpoint),
+    GateioSpotAndMargin(GateioSpotAndMarginWebSocketEndpoint),
 }
 
 #[derive(Debug, Clone, Default)]
@@ -173,6 +192,18 @@ impl WebSocketClientConfig {
     pub fn binance_usds_margined_futures_account_data() -> Self {
         Self::new(WebSocketEndpoint::BinanceUsdsMarginedFutures(
             BinanceUsdsMarginedFuturesWebSocketEndpoint::AccountData,
+        ))
+    }
+
+    pub fn gateio_spot_and_margin_market_data() -> Self {
+        Self::new(WebSocketEndpoint::GateioSpotAndMargin(
+            GateioSpotAndMarginWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn gateio_spot_and_margin_account_data() -> Self {
+        Self::new(WebSocketEndpoint::GateioSpotAndMargin(
+            GateioSpotAndMarginWebSocketEndpoint::AccountData,
         ))
     }
 }
