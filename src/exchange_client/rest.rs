@@ -210,6 +210,9 @@ pub async fn execute_http_request(
     crate::fine!("Status: {}", http_response.status);
     crate::fine!("Headers: {:#?}", http_response.headers);
     crate::fine!("Body: {}", http_response.body);
+    if let Some(json_payload) = http_response.json_payload.as_ref() {
+        crate::fine!("Json payload: {:#?}", json_payload);
+    }
 
     Ok(http_response)
 }

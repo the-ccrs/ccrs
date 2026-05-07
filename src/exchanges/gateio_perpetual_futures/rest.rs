@@ -1,6 +1,6 @@
 #[async_trait::async_trait]
 impl crate::exchange_client::rest::Rest
-    for crate::exchanges::gateio_spot_and_margin::common::GateioSpotAndMarginClient
+    for crate::exchanges::gateio_perpetual_futures::common::GateioPerpetualFuturesClient
 {
     fn create_get_instrument_info_http_request(
         &self,
@@ -8,12 +8,17 @@ impl crate::exchange_client::rest::Rest
     ) -> crate::networking::http::HttpRequest {
         let path = if !get_instrument_info_request.symbol.is_empty() {
             format!(
-                "{}/spot/currency_pairs/{}",
+                "{}/futures/{}/contracts/{}",
                 Self::REST_API_PREFIX,
+                self.settle,
                 get_instrument_info_request.symbol
             )
         } else {
-            format!("{}/spot/currency_pairs", Self::REST_API_PREFIX)
+            format!(
+                "{}/futures/{}/contracts",
+                Self::REST_API_PREFIX,
+                self.settle
+            )
         };
 
         crate::networking::http::HttpRequest::new(
@@ -34,16 +39,13 @@ impl crate::exchange_client::rest::Rest
             std::collections::HashMap::new();
 
         if !get_top_of_book_request.symbol.is_empty() {
-            query_params.insert(
-                "currency_pair".into(),
-                get_top_of_book_request.symbol.clone(),
-            );
+            query_params.insert("contract".into(), get_top_of_book_request.symbol.clone());
         }
 
         crate::networking::http::HttpRequest::new(
             &self.rest_api_base_url,
             reqwest::Method::GET,
-            &format!("{}/spot/tickers", Self::REST_API_PREFIX),
+            &format!("{}/futures/{}/tickers", Self::REST_API_PREFIX, self.settle),
             None,
             if query_params.is_empty() {
                 None
@@ -130,43 +132,33 @@ impl crate::exchange_client::rest::Rest
         &self,
         place_order_request: &crate::exchange_client::common::PlaceOrderRequest,
     ) -> crate::networking::http::HttpRequest {
+        let qty = place_order_request.quantity.parse::<f64>().unwrap_or(0.0) as i64;
+        let size = self.convert_order_side_to_signed_size(place_order_request.side, qty);
+        let tif = self.convert_order_type_to_tif_string(place_order_request.order_type);
+
         let mut body_map = serde_json::Map::new();
 
         body_map.insert(
-            "currency_pair".into(),
+            "contract".into(),
             serde_json::json!(place_order_request.symbol),
         );
-        body_map.insert(
-            "side".into(),
-            serde_json::json!(self.convert_order_side_to_string(place_order_request.side)),
-        );
-        body_map.insert(
-            "type".into(),
-            serde_json::json!(self.convert_order_type_to_string(place_order_request.order_type)),
-        );
-        body_map.insert(
-            "amount".into(),
-            serde_json::json!(place_order_request.quantity),
-        );
-        body_map.insert("account".into(), serde_json::json!(self.account));
+        body_map.insert("size".into(), serde_json::json!(size));
+        body_map.insert("tif".into(), serde_json::json!(tif));
 
         match place_order_request.order_type {
             crate::types::OrderType::Limit => {
                 body_map.insert("price".into(), serde_json::json!(place_order_request.price));
-                body_map.insert("time_in_force".into(), serde_json::json!("gtc"));
             }
             crate::types::OrderType::Market => {
-                body_map.insert("time_in_force".into(), serde_json::json!("ioc"));
+                body_map.insert("price".into(), serde_json::json!("0"));
             }
-            crate::types::OrderType::Unknown => {
-                panic!()
-            }
+            crate::types::OrderType::Unknown => panic!("Invalid order type"),
         }
 
         if !place_order_request.client_order_id.is_empty() {
             body_map.insert(
                 "text".into(),
-                serde_json::json!(place_order_request.client_order_id.clone()),
+                serde_json::json!(place_order_request.client_order_id),
             );
         }
 
@@ -175,7 +167,7 @@ impl crate::exchange_client::rest::Rest
         crate::networking::http::HttpRequest::new(
             &self.rest_api_base_url,
             reqwest::Method::POST,
-            &format!("{}/spot/orders", Self::REST_API_PREFIX),
+            &format!("{}/futures/{}/orders", Self::REST_API_PREFIX, self.settle),
             Some(reqwest::header::HeaderMap::new()),
             None,
             Some(body_value),
@@ -186,11 +178,6 @@ impl crate::exchange_client::rest::Rest
         &self,
         cancel_order_request: &crate::exchange_client::common::CancelOrderRequest,
     ) -> crate::networking::http::HttpRequest {
-        let mut query_params: std::collections::HashMap<String, String> =
-            std::collections::HashMap::new();
-
-        query_params.insert("currency_pair".into(), cancel_order_request.symbol.clone());
-
         let order_id = if !cancel_order_request.order_id.is_empty() {
             cancel_order_request.order_id.clone()
         } else {
@@ -200,9 +187,14 @@ impl crate::exchange_client::rest::Rest
         crate::networking::http::HttpRequest::new(
             &self.rest_api_base_url,
             reqwest::Method::DELETE,
-            &format!("{}/spot/orders/{}", Self::REST_API_PREFIX, order_id),
+            &format!(
+                "{}/futures/{}/orders/{}",
+                Self::REST_API_PREFIX,
+                self.settle,
+                order_id
+            ),
             None,
-            Some(query_params),
+            None,
             None,
         )
     }
@@ -214,38 +206,56 @@ impl crate::exchange_client::rest::Rest
         let mut query_params: std::collections::HashMap<String, String> =
             std::collections::HashMap::new();
 
+        query_params.insert("status".into(), "open".into());
+
+        if !get_open_order_request.symbol.is_empty() {
+            query_params.insert("contract".into(), get_open_order_request.symbol.clone());
+        }
+
         if get_open_order_request.limit > 0 {
             query_params.insert("limit".into(), get_open_order_request.limit.to_string());
         }
 
-        if !get_open_order_request.next_page_cursor.is_empty()
-            && let Ok(page) = get_open_order_request.next_page_cursor.parse::<u32>()
-        {
-            query_params.insert("page".into(), page.to_string());
+        if !get_open_order_request.next_page_cursor.is_empty() {
+            query_params.insert(
+                "last_id".into(),
+                get_open_order_request.next_page_cursor.clone(),
+            );
         }
 
         crate::networking::http::HttpRequest::new(
             &self.rest_api_base_url,
             reqwest::Method::GET,
-            &format!("{}/spot/open_orders", Self::REST_API_PREFIX),
+            &format!("{}/futures/{}/orders", Self::REST_API_PREFIX, self.settle),
             None,
-            if query_params.is_empty() {
-                None
-            } else {
-                Some(query_params)
-            },
+            Some(query_params),
             None,
         )
     }
 
     fn create_get_position_http_request(
         &self,
-        _get_position_request: &crate::exchange_client::common::GetPositionRequest,
+        get_position_request: &crate::exchange_client::common::GetPositionRequest,
     ) -> crate::networking::http::HttpRequest {
+        let path = if !get_position_request.symbol.is_empty() {
+            format!(
+                "{}/futures/{}/positions/{}",
+                Self::REST_API_PREFIX,
+                self.settle,
+                get_position_request.symbol
+            )
+        } else {
+            format!(
+                "{}/futures/{}/positions",
+                Self::REST_API_PREFIX,
+                self.settle
+            )
+        };
+
         crate::networking::http::HttpRequest::new(
             &self.rest_api_base_url,
             reqwest::Method::GET,
-            &format!("{}/spot/accounts", Self::REST_API_PREFIX),
+            &path,
             None,
             None,
             None,
@@ -266,7 +276,7 @@ impl crate::exchange_client::rest::Rest
         crate::networking::http::HttpRequest::new(
             &self.rest_api_base_url,
             reqwest::Method::GET,
-            &format!("{}/spot/accounts", Self::REST_API_PREFIX),
+            &format!("{}/unified/accounts", Self::REST_API_PREFIX),
             None,
             if query_params.is_empty() {
                 None
@@ -327,10 +337,9 @@ impl crate::exchange_client::rest::Rest
 
         for item in data_array {
             response.data.push(crate::types::TopOfBook {
-                exchange_instrument_type: crate::types::ExchangeInstrumentType::GateioSpotAndMargin(
-                    self.instrument_type,
-                ),
-                symbol: item["currency_pair"].as_str().unwrap_or("").to_string(),
+                exchange_instrument_type:
+                    crate::types::ExchangeInstrumentType::GateioPerpetualFutures,
+                symbol: item["contract"].as_str().unwrap_or("").to_string(),
                 timestamp,
                 bid_price: item["highest_bid"].as_str().unwrap_or("").to_string(),
                 bid_size: item["highest_size"].as_str().unwrap_or("").to_string(),
@@ -348,11 +357,21 @@ impl crate::exchange_client::rest::Rest
     ) -> crate::exchange_client::common::Response {
         let json_payload = http_response.json_payload.unwrap();
 
-        let response = crate::exchange_client::common::PlaceOrderResponse {
-            order_id: json_payload["id"].as_str().unwrap_or("").to_string(),
+        let order_id = if let Some(id) = json_payload.get("id") {
+            if let Some(n) = id.as_i64() {
+                n.to_string()
+            } else if let Some(s) = id.as_str() {
+                s.to_string()
+            } else {
+                String::new()
+            }
+        } else {
+            String::new()
         };
 
-        crate::exchange_client::common::Response::PlaceOrder(response)
+        crate::exchange_client::common::Response::PlaceOrder(
+            crate::exchange_client::common::PlaceOrderResponse { order_id },
+        )
     }
 
     fn create_cancel_order_rest_response(
@@ -375,17 +394,7 @@ impl crate::exchange_client::rest::Rest
         if let Some(list) = json_payload.as_array() {
             response.data = list
                 .iter()
-                .flat_map(|item| {
-                    item["orders"]
-                        .as_array()
-                        .map(|orders| {
-                            orders
-                                .iter()
-                                .map(|order| self.convert_json_value_to_order(order))
-                                .collect::<Vec<_>>()
-                        })
-                        .unwrap_or_default()
-                })
+                .map(|item| self.convert_json_value_to_order(item))
                 .collect();
         }
 
@@ -394,11 +403,24 @@ impl crate::exchange_client::rest::Rest
 
     fn create_get_position_rest_response(
         &self,
-        _http_response: crate::networking::http::HttpResponse,
+        http_response: crate::networking::http::HttpResponse,
     ) -> crate::exchange_client::common::Response {
-        crate::exchange_client::common::Response::GetPosition(
-            crate::exchange_client::common::GetPositionResponse::default(),
-        )
+        let json_payload = http_response.json_payload.unwrap();
+
+        let mut response = crate::exchange_client::common::GetPositionResponse::default();
+
+        if let Some(list) = json_payload.as_array() {
+            response.data = list
+                .iter()
+                .map(|item| self.convert_json_value_to_position(item))
+                .collect();
+        } else if json_payload.is_object() {
+            response
+                .data
+                .push(self.convert_json_value_to_position(&json_payload));
+        }
+
+        crate::exchange_client::common::Response::GetPosition(response)
     }
 
     fn create_get_balance_rest_response(
@@ -409,10 +431,12 @@ impl crate::exchange_client::rest::Rest
 
         let mut response = crate::exchange_client::common::GetBalanceResponse::default();
 
-        if let Some(accounts) = json_payload.as_array() {
-            response.data = accounts
+        if let Some(balances) = json_payload.get("balances").and_then(|v| v.as_object()) {
+            response.data = balances
                 .iter()
-                .map(|item| self.convert_json_value_to_balance(item))
+                .map(|(currency, balance_json)| {
+                    self.convert_balance_entry_to_balance(currency, balance_json)
+                })
                 .collect();
         }
 

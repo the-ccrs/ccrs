@@ -51,6 +51,7 @@ pub enum Exchange {
     BinanceSpot,
     BinanceUsdsMarginedFutures,
     GateioSpotAndMargin,
+    GateioPerpetualFutures,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -90,6 +91,7 @@ pub enum ExchangeInstrumentType {
     BinanceSpot,
     BinanceUsdsMarginedFutures,
     GateioSpotAndMargin(GateioSpotAndMarginInstrumentType),
+    GateioPerpetualFutures,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -133,6 +135,14 @@ pub enum GateioSpotAndMarginWebSocketEndpoint {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum GateioPerpetualFuturesWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum WebSocketEndpoint {
     #[default]
     Unknown,
@@ -141,6 +151,7 @@ pub enum WebSocketEndpoint {
     BinanceSpot(BinanceSpotWebSocketEndpoint),
     BinanceUsdsMarginedFutures(BinanceUsdsMarginedFuturesWebSocketEndpoint),
     GateioSpotAndMargin(GateioSpotAndMarginWebSocketEndpoint),
+    GateioPerpetualFutures(GateioPerpetualFuturesWebSocketEndpoint),
 }
 
 #[derive(Debug, Clone, Default)]
@@ -204,6 +215,18 @@ impl WebSocketClientConfig {
     pub fn gateio_spot_and_margin_account_data() -> Self {
         Self::new(WebSocketEndpoint::GateioSpotAndMargin(
             GateioSpotAndMarginWebSocketEndpoint::AccountData,
+        ))
+    }
+
+    pub fn gateio_perpetual_futures_market_data() -> Self {
+        Self::new(WebSocketEndpoint::GateioPerpetualFutures(
+            GateioPerpetualFuturesWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn gateio_perpetual_futures_account_data() -> Self {
+        Self::new(WebSocketEndpoint::GateioPerpetualFutures(
+            GateioPerpetualFuturesWebSocketEndpoint::AccountData,
         ))
     }
 }
