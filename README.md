@@ -32,6 +32,7 @@ Our documentation is centered around comprehensive, real-world examples that dem
 * [WebSocket subscribe trade](examples/websocket_subscribe_trade.rs) — `cargo run --example websocket_subscribe_trade`
 * [WebSocket subscribe order](examples/websocket_subscribe_order.rs) — `env USE_TESTNET=true BYBIT_API_KEY='...' BYBIT_API_SECRET='...' cargo run --example websocket_subscribe_order`
 * [WebSocket subscribe fill](examples/websocket_subscribe_fill.rs) — `env USE_TESTNET=true BYBIT_API_KEY='...' BYBIT_API_SECRET='...' cargo run --example websocket_subscribe_fill`
+* [Websocket read batch](examples/websocket_read_batch.rs) — `cargo run --example websocket_read_batch`
 * [Enable library logging](examples/enable_library_logging.rs) — `cargo run --example enable_library_logging --features max_log_level_finest`
 * [Connect to proxy](examples/connect_to_proxy.rs) — `cargo run --example connect_to_proxy`
 

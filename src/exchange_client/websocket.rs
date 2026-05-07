@@ -69,10 +69,26 @@ pub trait Websocket {
     panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
 }
 
+    async fn handle_websocket_message(
+        &self,
+        websocket_client: &mut crate::networking::websocket::WebSocketClient,
+        message: tokio_tungstenite::tungstenite::Message,
+    ) -> Result<crate::exchange_client::common::Response, crate::exchange_client::common::Response>
+    {
+    panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
+}
+
     async fn read_next_websocket_message(
         &self,
         websocket_client: &mut crate::networking::websocket::WebSocketClient,
     ) -> crate::exchange_client::common::Response {
+    panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
+}
+
+    async fn read_next_websocket_message_batch(
+        &self,
+        websocket_client: &mut crate::networking::websocket::WebSocketClient,
+    ) -> Vec<crate::exchange_client::common::Response> {
     panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
 }
 
