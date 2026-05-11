@@ -35,6 +35,7 @@ pub enum OrderStatus {
     #[default]
     Unknown,
     Placed,
+    Open,
     PartiallyFilled,
     Filled,
     Canceled,
@@ -47,6 +48,7 @@ pub enum Exchange {
     #[default]
     Unknown,
     Bybit,
+    Coinbase,
     Okx,
     BinanceSpot,
     BinanceUsdsMarginedFutures,
@@ -87,6 +89,7 @@ pub enum ExchangeInstrumentType {
     #[default]
     Unknown,
     Bybit(BybitInstrumentType),
+    Coinbase,
     Okx(OkxInstrumentType),
     BinanceSpot,
     BinanceUsdsMarginedFutures,
@@ -104,6 +107,14 @@ pub enum BybitWebSocketEndpoint {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum OkxWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum CoinbaseWebSocketEndpoint {
     #[default]
     Unknown,
     MarketData,
@@ -148,6 +159,7 @@ pub enum WebSocketEndpoint {
     Unknown,
     Bybit(BybitWebSocketEndpoint),
     Okx(OkxWebSocketEndpoint),
+    Coinbase(CoinbaseWebSocketEndpoint),
     BinanceSpot(BinanceSpotWebSocketEndpoint),
     BinanceUsdsMarginedFutures(BinanceUsdsMarginedFuturesWebSocketEndpoint),
     GateioSpotAndMargin(GateioSpotAndMarginWebSocketEndpoint),
@@ -180,6 +192,18 @@ impl WebSocketClientConfig {
 
     pub fn okx_account_data() -> Self {
         Self::new(WebSocketEndpoint::Okx(OkxWebSocketEndpoint::AccountData))
+    }
+
+    pub fn coinbase_market_data() -> Self {
+        Self::new(WebSocketEndpoint::Coinbase(
+            CoinbaseWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn coinbase_account_data() -> Self {
+        Self::new(WebSocketEndpoint::Coinbase(
+            CoinbaseWebSocketEndpoint::AccountData,
+        ))
     }
 
     pub fn binance_spot_market_data() -> Self {

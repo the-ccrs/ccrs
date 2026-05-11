@@ -1,6 +1,6 @@
 [package]
 name = "ccrs"
-version = "0.5.1"
+version = "0.6.0"
 edition = "2024"
 
 [package.metadata.release]
@@ -56,3 +56,4 @@ tokio-tungstenite = { version = "0.29", default-features = false, features = ["n
 tokio-util = { version = "0.7", features = ["full"] }
 tungstenite = { version = "0.29", default-features = false }
 url = "2"
+uuid = { version = "1", features = ["v4"] }

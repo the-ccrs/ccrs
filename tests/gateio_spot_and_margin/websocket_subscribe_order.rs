@@ -1,6 +1,7 @@
 use ccrs::exchange_client::common::SubscribeOrderRequest;
 
 use ccrs::exchange_client::common::Request;
+use ccrs::exchange_client::common::Response;
 use ccrs::exchange_client::websocket::Websocket;
 use ccrs::exchanges::gateio_spot_and_margin::common::GateioSpotAndMarginClient;
 use ccrs::exchanges::gateio_spot_and_margin::common::GateioSpotAndMarginCredential;
@@ -70,6 +71,10 @@ async fn main() {
                     .await;
 
                 println!("{:#?}", response);
+
+                if let Response::WebSocketReadError(_) = response {
+                    break;
+                }
             }
         },
     )

@@ -1,6 +1,7 @@
 use ccrs::exchange_client::common::SubscribeFillRequest;
 
 use ccrs::exchange_client::common::Request;
+use ccrs::exchange_client::common::Response;
 use ccrs::exchange_client::websocket::Websocket;
 use ccrs::exchanges::gateio_perpetual_futures::common::GateioPerpetualFuturesClient;
 use ccrs::exchanges::gateio_perpetual_futures::common::GateioPerpetualFuturesCredential;
@@ -66,6 +67,10 @@ async fn main() {
                     .await;
 
                 println!("{:#?}", response);
+
+                if let Response::WebSocketReadError(_) = response {
+                    break;
+                }
             }
         },
     )

@@ -1,12 +1,11 @@
-use ccrs::exchange_client::common::SubscribeFillRequest;
+use ccrs::exchange_client::common::SubscribeOrderRequest;
 
 use ccrs::exchange_client::common::Request;
 use ccrs::exchange_client::common::Response;
 use ccrs::exchange_client::websocket::Websocket;
-use ccrs::exchanges::gateio_spot_and_margin::common::GateioSpotAndMarginClient;
-use ccrs::exchanges::gateio_spot_and_margin::common::GateioSpotAndMarginCredential;
+use ccrs::exchanges::coinbase::common::CoinbaseClient;
+use ccrs::exchanges::coinbase::common::CoinbaseCredential;
 use ccrs::networking::websocket::WebSocketConfig;
-use ccrs::types::GateioSpotAndMarginInstrumentType;
 use ccrs::types::WebSocketClientConfig;
 use ccrs::utils::get_env_as_bool;
 use ccrs::utils::get_env_as_number;
@@ -18,30 +17,29 @@ mod common;
 async fn main() {
     common::setup();
 
-    let api_key = get_env_as_string("GATEIO_SPOT_AND_MARGIN_API_KEY", "");
-    let api_secret = get_env_as_string("GATEIO_SPOT_AND_MARGIN_API_SECRET", "");
+    let api_key = get_env_as_string("COINBASE_API_KEY", "");
+    let api_secret = get_env_as_string("COINBASE_API_SECRET", "");
+    let api_passphrase = get_env_as_string("COINBASE_API_PASSPHRASE", "");
 
-    let credential = GateioSpotAndMarginCredential {
+    let credential = CoinbaseCredential {
         api_key,
         api_secret,
+        api_passphrase,
     };
-    let use_testnet = get_env_as_bool("USE_TESTNET", false);
+    let use_sandbox = get_env_as_bool("USE_SANDBOX", false);
 
-    let mut gateio_client_builder = GateioSpotAndMarginClient::builder();
+    let mut coinbase_client_builder = CoinbaseClient::builder();
 
-    if use_testnet {
-        gateio_client_builder = gateio_client_builder
-            .websocket_account_data_api_url("wss://ws-testnet.gate.com/v4/ws/spot");
+    if use_sandbox {
+        coinbase_client_builder = coinbase_client_builder
+            .websocket_account_data_api_url("wss://ws-feed-public.sandbox.exchange.coinbase.com");
     }
 
-    let gateio_client = gateio_client_builder
-        .instrument_type(GateioSpotAndMarginInstrumentType::Spot)
-        .credential(Some(credential))
-        .build();
+    let coinbase_client = coinbase_client_builder.credential(Some(credential)).build();
 
-    let mut websocket_client = match gateio_client
+    let mut websocket_client = match coinbase_client
         .create_websocket_client(
-            WebSocketClientConfig::gateio_spot_and_margin_account_data(),
+            WebSocketClientConfig::coinbase_account_data(),
             WebSocketConfig::default(),
         )
         .await
@@ -53,12 +51,15 @@ async fn main() {
         }
     };
 
-    let subscribe_fill_request = SubscribeFillRequest::default();
+    let mut subscribe_order_request = SubscribeOrderRequest::default();
+    subscribe_order_request
+        .symbols
+        .push(get_env_as_string("SYMBOL", "BTC-USD"));
 
-    let request = Request::SubscribeFill(subscribe_fill_request);
+    let request = Request::SubscribeOrder(subscribe_order_request);
 
     let websocket_sender = websocket_client.sender();
-    let _ = gateio_client
+    let _ = coinbase_client
         .send_websocket_request(&websocket_sender, request)
         .await;
 
@@ -66,7 +67,7 @@ async fn main() {
         tokio::time::Duration::from_secs(get_env_as_number::<u64>("STOP_TIME_SECS", 10)),
         async {
             loop {
-                let response = gateio_client
+                let response = coinbase_client
                     .read_next_websocket_message(&mut websocket_client)
                     .await;
 

@@ -1,6 +1,7 @@
 use ccrs::exchange_client::common::SubscribeOrderRequest;
 
 use ccrs::exchange_client::common::Request;
+use ccrs::exchange_client::common::Response;
 use ccrs::exchange_client::websocket::Websocket;
 use ccrs::exchanges::okx::common::OkxClient;
 use ccrs::exchanges::okx::common::OkxCredential;
@@ -72,6 +73,10 @@ async fn main() {
                     .await;
 
                 println!("{:#?}", response);
+
+                if let Response::WebSocketReadError(_) = response {
+                    break;
+                }
             }
         },
     )

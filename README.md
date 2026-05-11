@@ -3,7 +3,9 @@
 * Unified API for different exchanges. Supported exchanges:
   * [Binance](https://accounts.maxweb.black/register?ref=1116718520)
   * [Bybit](https://www.bybit.com/invite?ref=XNYP2K).
+  * [Coinbase](https://advanced.coinbase.com/join/CKGCX6U).
   * [Gate](https://www.gate.com/signup/VLUQXVFWAW?ref_type=103).
+  * [HTX](https://www.htx.com/invite/en-us/1f?invite_code=rmw7d223).
   * [OKX](https://www.okx.com/join/47636709).
   * Many more coming soon.
 * For any questions, contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5.
