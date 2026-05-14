@@ -63,6 +63,7 @@ pub enum Request {
     GetOpenOrder(GetOpenOrderRequest),
     GetPosition(GetPositionRequest),
     GetBalance(GetBalanceRequest),
+    GetAccountInfo(GetAccountInfoRequest),
 
     SubscribeTopOfBook(SubscribeTopOfBookRequest),
     SubscribeTrade(SubscribeTradeRequest),
@@ -81,6 +82,7 @@ pub enum Response {
     GetOpenOrder(GetOpenOrderResponse),
     GetPosition(GetPositionResponse),
     GetBalance(GetBalanceResponse),
+    GetAccountInfo(GetAccountInfoResponse),
     HttpRequestError(anyhow::Error),
     HttpErrorResponse(crate::networking::http::HttpResponse),
 
@@ -150,6 +152,9 @@ pub struct GetBalanceRequest {
 }
 
 #[derive(Debug, Default)]
+pub struct GetAccountInfoRequest {}
+
+#[derive(Debug, Default)]
 pub struct SubscribeTopOfBookRequest {
     pub id: Option<u64>,
     pub symbols: Vec<String>,
@@ -207,6 +212,11 @@ pub struct GetPositionResponse {
 #[derive(Debug, Default)]
 pub struct GetBalanceResponse {
     pub data: Vec<crate::types::Balance>,
+}
+
+#[derive(Debug, Default)]
+pub struct GetAccountInfoResponse {
+    pub data: Vec<crate::types::AccountInfo>,
 }
 
 #[derive(Debug, Default)]

@@ -11,13 +11,17 @@ pub trait Rest {
 
     fn create_get_instrument_info_http_request(
         &self,
-        get_instrument_info_request: &crate::exchange_client::common::GetInstrumentInfoRequest,
-    ) -> crate::networking::http::HttpRequest;
+        _: &crate::exchange_client::common::GetInstrumentInfoRequest,
+    ) -> crate::networking::http::HttpRequest {
+        unimplemented!()
+    }
 
     fn create_get_top_of_book_http_request(
         &self,
-        get_top_of_book_request: &crate::exchange_client::common::GetTopOfBookRequest,
-    ) -> crate::networking::http::HttpRequest;
+        _: &crate::exchange_client::common::GetTopOfBookRequest,
+    ) -> crate::networking::http::HttpRequest {
+        unimplemented!()
+    }
 
     fn sign_http_request(
         &self,
@@ -27,28 +31,45 @@ pub trait Rest {
 
     fn create_place_order_http_request(
         &self,
-        place_order_request: &crate::exchange_client::common::PlaceOrderRequest,
-    ) -> crate::networking::http::HttpRequest;
+        _: &crate::exchange_client::common::PlaceOrderRequest,
+    ) -> crate::networking::http::HttpRequest {
+        unimplemented!()
+    }
 
     fn create_cancel_order_http_request(
         &self,
-        cancel_order_request: &crate::exchange_client::common::CancelOrderRequest,
-    ) -> crate::networking::http::HttpRequest;
+        _: &crate::exchange_client::common::CancelOrderRequest,
+    ) -> crate::networking::http::HttpRequest {
+        unimplemented!()
+    }
 
     fn create_get_open_order_http_request(
         &self,
-        get_open_order_request: &crate::exchange_client::common::GetOpenOrderRequest,
-    ) -> crate::networking::http::HttpRequest;
+        _: &crate::exchange_client::common::GetOpenOrderRequest,
+    ) -> crate::networking::http::HttpRequest {
+        unimplemented!()
+    }
 
     fn create_get_position_http_request(
         &self,
-        get_position_order_request: &crate::exchange_client::common::GetPositionRequest,
-    ) -> crate::networking::http::HttpRequest;
+        _: &crate::exchange_client::common::GetPositionRequest,
+    ) -> crate::networking::http::HttpRequest {
+        unimplemented!()
+    }
 
     fn create_get_balance_http_request(
         &self,
-        get_balance_request: &crate::exchange_client::common::GetBalanceRequest,
-    ) -> crate::networking::http::HttpRequest;
+        _: &crate::exchange_client::common::GetBalanceRequest,
+    ) -> crate::networking::http::HttpRequest {
+        unimplemented!()
+    }
+
+    fn create_get_account_info_http_request(
+        &self,
+        _: &crate::exchange_client::common::GetAccountInfoRequest,
+    ) -> crate::networking::http::HttpRequest {
+        unimplemented!()
+    }
 
     fn is_http_response_success(
         &self,
@@ -57,43 +78,66 @@ pub trait Rest {
 
     fn create_get_instrument_info_rest_response(
         &self,
-        http_response: crate::networking::http::HttpResponse,
-    ) -> crate::exchange_client::common::Response;
+        _: crate::networking::http::HttpResponse,
+    ) -> crate::exchange_client::common::Response {
+        unimplemented!()
+    }
 
     fn create_get_top_of_book_rest_response(
         &self,
-        http_response: crate::networking::http::HttpResponse,
-    ) -> crate::exchange_client::common::Response;
+        _: crate::networking::http::HttpResponse,
+    ) -> crate::exchange_client::common::Response {
+        unimplemented!()
+    }
 
     fn create_place_order_rest_response(
         &self,
-        http_response: crate::networking::http::HttpResponse,
-    ) -> crate::exchange_client::common::Response;
+        _: crate::networking::http::HttpResponse,
+    ) -> crate::exchange_client::common::Response {
+        unimplemented!()
+    }
 
     fn create_cancel_order_rest_response(
         &self,
-        http_response: crate::networking::http::HttpResponse,
-    ) -> crate::exchange_client::common::Response;
+        _: crate::networking::http::HttpResponse,
+    ) -> crate::exchange_client::common::Response {
+        unimplemented!()
+    }
 
     fn create_get_open_order_rest_response(
         &self,
-        http_response: crate::networking::http::HttpResponse,
-    ) -> crate::exchange_client::common::Response;
+        _: crate::networking::http::HttpResponse,
+    ) -> crate::exchange_client::common::Response {
+        unimplemented!()
+    }
 
     fn create_get_position_rest_response(
         &self,
-        http_response: crate::networking::http::HttpResponse,
-    ) -> crate::exchange_client::common::Response;
+        _: crate::networking::http::HttpResponse,
+    ) -> crate::exchange_client::common::Response {
+        unimplemented!()
+    }
 
     fn create_get_balance_rest_response(
         &self,
-        http_response: crate::networking::http::HttpResponse,
-    ) -> crate::exchange_client::common::Response;
+        _: crate::networking::http::HttpResponse,
+    ) -> crate::exchange_client::common::Response {
+        unimplemented!()
+    }
+
+    fn create_get_account_info_rest_response(
+        &self,
+        _: crate::networking::http::HttpResponse,
+    ) -> crate::exchange_client::common::Response {
+        unimplemented!()
+    }
 
     fn create_http_error_response(
         &self,
-        http_response: &crate::networking::http::HttpResponse,
-    ) -> crate::exchange_client::common::Response;
+        _: &crate::networking::http::HttpResponse,
+    ) -> crate::exchange_client::common::Response {
+        unimplemented!()
+    }
 
     async fn send_http_request(
         &self,
@@ -134,6 +178,12 @@ pub trait Rest {
                 self.sign_http_request(&mut http_request, now);
                 http_request
             }
+            crate::exchange_client::common::Request::GetAccountInfo(get_account_info_request) => {
+                let mut http_request =
+                    self.create_get_account_info_http_request(get_account_info_request);
+                self.sign_http_request(&mut http_request, now);
+                http_request
+            }
             _ => panic!(),
         };
 
@@ -167,6 +217,9 @@ pub trait Rest {
             }
             crate::exchange_client::common::Request::GetBalance(_) => {
                 self.create_get_balance_rest_response(http_response)
+            }
+            crate::exchange_client::common::Request::GetAccountInfo(_) => {
+                self.create_get_account_info_rest_response(http_response)
             }
 
             _ => panic!(),

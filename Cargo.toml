@@ -1,6 +1,6 @@
 [package]
 name = "ccrs"
-version = "0.6.1"
+version = "0.7.0"
 edition = "2024"
 
 [package.metadata.release]
@@ -32,6 +32,7 @@ base64 = "0.22"
 bytes = "1"
 chrono = { version = "0.4", features = ["clock"] }
 ed25519-dalek = { version = "2", features = ["pkcs8"] }
+flate2 = "1"
 futures = "0.3"
 futures-util = "0.3"
 hex = "0.4"
