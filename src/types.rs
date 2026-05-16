@@ -43,7 +43,7 @@ pub enum OrderStatus {
     Expired,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Hash)]
 pub enum Exchange {
     #[default]
     Unknown,
@@ -57,7 +57,7 @@ pub enum Exchange {
     HtxSpot,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Hash)]
 pub enum GateioSpotAndMarginInstrumentType {
     #[default]
     Unknown,
@@ -65,7 +65,7 @@ pub enum GateioSpotAndMarginInstrumentType {
     Margin,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Hash)]
 pub enum BybitInstrumentType {
     #[default]
     Unknown,
@@ -74,7 +74,7 @@ pub enum BybitInstrumentType {
     Inverse,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Hash)]
 pub enum OkxInstrumentType {
     #[default]
     Unknown,
@@ -85,7 +85,7 @@ pub enum OkxInstrumentType {
     Option,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Hash)]
 pub enum ExchangeInstrumentType {
     #[default]
     Unknown,

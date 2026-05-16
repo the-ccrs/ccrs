@@ -11,6 +11,7 @@ pub struct HtxSpotClient {
     pub(super) websocket_account_data_api_url: String,
     pub(super) credential: Option<HtxSpotCredential>,
     pub(super) account_id: String,
+    pub(super) api_broker_id: String,
 }
 
 impl HtxSpotClient {
@@ -239,9 +240,15 @@ impl HtxSpotClientBuilder {
             websocket_account_data_api_url,
             credential: self.credential,
             account_id: self.account_id.unwrap_or_default(),
+            api_broker_id: "AA3b46363e".to_string(),
         }
     }
 }
 
 #[async_trait::async_trait]
-impl crate::exchange_client::common::Common for HtxSpotClient {}
+impl crate::exchange_client::common::Common for HtxSpotClient {
+    fn prefix_client_order_id(&self, client_order_id: &mut String) {
+        let prefix = format!("{}-", self.api_broker_id);
+        client_order_id.insert_str(0, &prefix);
+    }
+}

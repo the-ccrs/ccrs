@@ -10,7 +10,7 @@ impl crate::exchange_client::websocket::Websocket
 
     async fn create_websocket_client(
         &self,
-        _websocket_client_config: crate::types::WebSocketClientConfig,
+        websocket_client_config: crate::types::WebSocketClientConfig,
         websocket_config: crate::networking::websocket::WebSocketConfig,
     ) -> anyhow::Result<crate::networking::websocket::WebSocketClient> {
     panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");

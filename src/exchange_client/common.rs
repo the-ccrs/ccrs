@@ -243,6 +243,7 @@ pub struct FillSubscriptionData {
 pub struct AuthenticateResponse {
     pub id: Option<u64>,
 }
+
 #[derive(Debug)]
 pub enum SubscribeResponseKind {
     TopOfBook,
