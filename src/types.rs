@@ -55,6 +55,7 @@ pub enum Exchange {
     GateioSpotAndMargin,
     GateioPerpetualFutures,
     HtxSpot,
+    HtxUsdtMarginedFutures,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Hash)]
@@ -97,6 +98,7 @@ pub enum ExchangeInstrumentType {
     GateioSpotAndMargin(GateioSpotAndMarginInstrumentType),
     GateioPerpetualFutures,
     HtxSpot,
+    HtxUsdtMarginedFutures,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -164,6 +166,14 @@ pub enum HtxSpotWebSocketEndpoint {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum HtxUsdtMarginedFuturesWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum WebSocketEndpoint {
     #[default]
     Unknown,
@@ -175,6 +185,7 @@ pub enum WebSocketEndpoint {
     GateioSpotAndMargin(GateioSpotAndMarginWebSocketEndpoint),
     GateioPerpetualFutures(GateioPerpetualFuturesWebSocketEndpoint),
     HtxSpot(HtxSpotWebSocketEndpoint),
+    HtxUsdtMarginedFutures(HtxUsdtMarginedFuturesWebSocketEndpoint),
 }
 
 #[derive(Debug, Clone, Default)]
@@ -274,6 +285,18 @@ impl WebSocketClientConfig {
     pub fn htx_spot_account_data() -> Self {
         Self::new(WebSocketEndpoint::HtxSpot(
             HtxSpotWebSocketEndpoint::AccountData,
+        ))
+    }
+
+    pub fn htx_usdt_margined_futures_market_data() -> Self {
+        Self::new(WebSocketEndpoint::HtxUsdtMarginedFutures(
+            HtxUsdtMarginedFuturesWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn htx_usdt_margined_futures_account_data() -> Self {
+        Self::new(WebSocketEndpoint::HtxUsdtMarginedFutures(
+            HtxUsdtMarginedFuturesWebSocketEndpoint::AccountData,
         ))
     }
 }

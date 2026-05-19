@@ -5,4 +5,5 @@ pub mod coinbase;
 pub mod gateio_perpetual_futures;
 pub mod gateio_spot_and_margin;
 pub mod htx_spot;
+pub mod htx_usdt_margined_futures;
 pub mod okx;
