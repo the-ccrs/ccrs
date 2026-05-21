@@ -48,6 +48,7 @@ pub enum Exchange {
     #[default]
     Unknown,
     Bybit,
+    Bitget,
     Coinbase,
     Okx,
     BinanceSpot,
@@ -64,6 +65,15 @@ pub enum GateioSpotAndMarginInstrumentType {
     Unknown,
     Spot,
     Margin,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Hash)]
+pub enum BitgetInstrumentType {
+    #[default]
+    Unknown,
+    Spot,
+    UsdtFutures,
+    CoinFutures,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Hash)]
@@ -91,6 +101,7 @@ pub enum ExchangeInstrumentType {
     #[default]
     Unknown,
     Bybit(BybitInstrumentType),
+    Bitget(BitgetInstrumentType),
     Coinbase,
     Okx(OkxInstrumentType),
     BinanceSpot,
@@ -99,6 +110,14 @@ pub enum ExchangeInstrumentType {
     GateioPerpetualFutures,
     HtxSpot,
     HtxUsdtMarginedFutures,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum BitgetWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -178,6 +197,7 @@ pub enum WebSocketEndpoint {
     #[default]
     Unknown,
     Bybit(BybitWebSocketEndpoint),
+    Bitget(BitgetWebSocketEndpoint),
     Okx(OkxWebSocketEndpoint),
     Coinbase(CoinbaseWebSocketEndpoint),
     BinanceSpot(BinanceSpotWebSocketEndpoint),
@@ -205,6 +225,18 @@ impl WebSocketClientConfig {
     pub fn bybit_account_data() -> Self {
         Self::new(WebSocketEndpoint::Bybit(
             BybitWebSocketEndpoint::AccountData,
+        ))
+    }
+
+    pub fn bitget_market_data() -> Self {
+        Self::new(WebSocketEndpoint::Bitget(
+            BitgetWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn bitget_account_data() -> Self {
+        Self::new(WebSocketEndpoint::Bitget(
+            BitgetWebSocketEndpoint::AccountData,
         ))
     }
 
@@ -366,6 +398,7 @@ pub struct Order {
 #[derive(Debug, Default)]
 pub struct Fill {
     pub exchange_instrument_type: ExchangeInstrumentType,
+    pub symbol: String,
     pub order_id: String,
     pub client_order_id: String,
     pub side: crate::types::OrderSide,

@@ -17,7 +17,7 @@ pub trait Websocket {
     panic!("This feature requires purchase, please contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5");
 }
 
-    async fn keep_websocket_connection_alive(
+    async fn keep_websocket_client_alive(
         &self,
         heartbeat_interval_secs: u64,
         websocket_sender: crate::networking::websocket::WebSocketSender,

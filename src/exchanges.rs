@@ -1,5 +1,6 @@
 pub mod binance_spot;
 pub mod binance_usds_margined_futures;
+pub mod bitget;
 pub mod bybit;
 pub mod coinbase;
 pub mod gateio_perpetual_futures;

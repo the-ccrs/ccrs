@@ -20,7 +20,7 @@ async fn main() {
 
     let api_key = get_env_as_string("OKX_API_KEY", "");
     let api_secret = get_env_as_string("OKX_API_SECRET", "");
-    let passphrase = get_env_as_string("OKX_PASSPHRASE", "");
+    let passphrase = get_env_as_string("OKX_API_PASSPHRASE", "");
 
     let credential = OkxCredential {
         api_key,

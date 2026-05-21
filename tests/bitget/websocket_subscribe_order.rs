@@ -1,12 +1,12 @@
-use ccrs::exchange_client::common::SubscribeFillRequest;
+use ccrs::exchange_client::common::SubscribeOrderRequest;
 
 use ccrs::exchange_client::common::Request;
 use ccrs::exchange_client::common::Response;
 use ccrs::exchange_client::websocket::Websocket;
-use ccrs::exchanges::okx::common::OkxClient;
-use ccrs::exchanges::okx::common::OkxCredential;
+use ccrs::exchanges::bitget::common::BitgetClient;
+use ccrs::exchanges::bitget::common::BitgetCredential;
 use ccrs::networking::websocket::WebSocketConfig;
-use ccrs::types::OkxInstrumentType;
+use ccrs::types::BitgetInstrumentType;
 use ccrs::types::WebSocketClientConfig;
 use ccrs::utils::get_env_as_bool;
 use ccrs::utils::get_env_as_number;
@@ -18,32 +18,33 @@ mod common;
 async fn main() {
     common::setup();
 
-    let api_key = get_env_as_string("OKX_API_KEY", "");
-    let api_secret = get_env_as_string("OKX_API_SECRET", "");
-    let passphrase = get_env_as_string("OKX_API_PASSPHRASE", "");
+    let api_key = get_env_as_string("BITGET_API_KEY", "");
+    let api_secret = get_env_as_string("BITGET_API_SECRET", "");
+    let passphrase = get_env_as_string("BITGET_API_PASSPHRASE", "");
 
-    let credential = OkxCredential {
+    let credential = BitgetCredential {
         api_key,
         api_secret,
         passphrase,
     };
+
     let use_demo_trading = get_env_as_bool("USE_DEMO_TRADING", false);
 
-    let mut okx_client_builder = OkxClient::builder();
+    let mut bitget_client_builder = BitgetClient::builder();
 
     if use_demo_trading {
-        okx_client_builder = okx_client_builder
-            .websocket_account_data_api_url("wss://wspap.okx.com:8443/ws/v5/private?brokerId=9999");
+        bitget_client_builder = bitget_client_builder
+            .websocket_account_data_api_url("wss://wspap.bitget.com/v3/ws/private");
     }
 
-    let okx_client = okx_client_builder
-        .instrument_type(OkxInstrumentType::Spot)
+    let bitget_client = bitget_client_builder
+        .instrument_type(BitgetInstrumentType::Spot)
         .credential(Some(credential))
         .build();
 
-    let mut websocket_client = match okx_client
+    let mut websocket_client = match bitget_client
         .create_websocket_client(
-            WebSocketClientConfig::okx_account_data(),
+            WebSocketClientConfig::bitget_account_data(),
             WebSocketConfig::default(),
         )
         .await
@@ -55,12 +56,12 @@ async fn main() {
         }
     };
 
-    let subscribe_fill_request = SubscribeFillRequest::default();
+    let subscribe_order_request = SubscribeOrderRequest::default();
 
-    let request = Request::SubscribeFill(subscribe_fill_request);
+    let request = Request::SubscribeOrder(subscribe_order_request);
 
     let websocket_sender = websocket_client.sender();
-    let _ = okx_client
+    let _ = bitget_client
         .send_websocket_request(&websocket_sender, request)
         .await;
 
@@ -68,7 +69,7 @@ async fn main() {
         tokio::time::Duration::from_secs(get_env_as_number::<u64>("STOP_TIME_SECS", 10)),
         async {
             loop {
-                let response = okx_client
+                let response = bitget_client
                     .read_next_websocket_message(&mut websocket_client)
                     .await;
 
