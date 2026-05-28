@@ -49,3 +49,32 @@ pub fn signing_key_from_pkcs8_pem(pem: &str) -> ed25519_dalek::SigningKey {
 
     ed25519_dalek::SigningKey::from_bytes(seed_bytes)
 }
+
+pub fn mask_hex_key(key: &str) -> String {
+    let key = key.trim();
+
+    let (prefix, rest) = if let Some(stripped) = key.strip_prefix("0x") {
+        ("0x", stripped)
+    } else {
+        ("", key)
+    };
+
+    if rest.len() > 8 {
+        if prefix == "0x" {
+            format!("0x{}...{}", &rest[..6], &rest[rest.len() - 4..])
+        } else {
+            format!("{}...{}", &rest[..4], &rest[rest.len() - 4..])
+        }
+    } else {
+        key.to_string()
+    }
+}
+
+pub fn remove_trailing_zeros(s: &str) -> String {
+    if !s.contains('.') {
+        return s.to_string();
+    }
+
+    let trimmed = s.trim_end_matches('0').trim_end_matches('.');
+    trimmed.to_string()
+}

@@ -7,6 +7,7 @@
   * [Coinbase](https://advanced.coinbase.com/join/CKGCX6U)
   * [Gate](https://www.gate.com/signup/VLUQXVFWAW?ref_type=103)
   * [HTX](https://www.htx.com/invite/en-us/1f?invite_code=rmw7d223)
+  * [Hyperliquid](https://app.hyperliquid.xyz/)
   * [OKX](https://www.okx.com/join/47636709)
   * Many more coming soon.
 * For any questions, contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5.
@@ -41,10 +42,6 @@ Our documentation is centered around comprehensive, real-world examples that dem
 
 More exchange specific examples can be found in the [`tests`](tests) directory.
 
-## Philosophy
-> "Everything should be made as simple as possible, but not simpler."
-> — *Albert Einstein*
-
-## Source Code Visibility
+<!-- ## Source Code Visibility
 * REST API source code is fully available.
-* WebSocket API source code is partially available. Full access can be obtained separately — please contact us at Telegram https://t.me/+NvPBKXi6kFNkYmE5.
+* WebSocket API source code is partially available. Full access can be obtained separately — please contact us at Telegram https://t.me/+NvPBKXi6kFNkYmE5. -->

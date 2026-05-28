@@ -1,41 +1,45 @@
 static CLIENT_ORDER_ID_GENERATOR_STATE: std::sync::atomic::AtomicU64 =
     std::sync::atomic::AtomicU64::new(0);
+static NONCE_GENERATOR_STATE: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+
+pub(crate) fn generate_client_order_id_parts() -> (u64, u64) {
+    let now = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_secs();
+
+    loop {
+        let current = CLIENT_ORDER_ID_GENERATOR_STATE.load(std::sync::atomic::Ordering::Relaxed);
+
+        let last_ts = current >> 32;
+        let last_seq = current & 0xffff_ffff;
+
+        let (next_ts, next_seq) = if last_ts == now {
+            (now, last_seq + 1)
+        } else {
+            (now, 0)
+        };
+
+        let next = (next_ts << 32) | next_seq;
+
+        if CLIENT_ORDER_ID_GENERATOR_STATE
+            .compare_exchange(
+                current,
+                next,
+                std::sync::atomic::Ordering::Relaxed,
+                std::sync::atomic::Ordering::Relaxed,
+            )
+            .is_ok()
+        {
+            return (next_ts, next_seq);
+        }
+    }
+}
 
 #[async_trait::async_trait]
 pub trait Common {
     fn generate_next_client_order_id(&self) -> String {
-        let now = std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .unwrap()
-            .as_secs();
-
-        let (ts, seq) = loop {
-            let current =
-                CLIENT_ORDER_ID_GENERATOR_STATE.load(std::sync::atomic::Ordering::Relaxed);
-
-            let last_ts = current >> 32;
-            let last_seq = current & 0xffff_ffff;
-
-            let (next_ts, next_seq) = if last_ts == now {
-                (now, last_seq + 1)
-            } else {
-                (now, 0)
-            };
-
-            let next = (next_ts << 32) | next_seq;
-
-            if CLIENT_ORDER_ID_GENERATOR_STATE
-                .compare_exchange(
-                    current,
-                    next,
-                    std::sync::atomic::Ordering::Relaxed,
-                    std::sync::atomic::Ordering::Relaxed,
-                )
-                .is_ok()
-            {
-                break (next_ts, next_seq);
-            }
-        };
+        let (ts, seq) = generate_client_order_id_parts();
 
         let mut client_order_id = String::new();
 
@@ -51,6 +55,32 @@ pub trait Common {
     }
 
     fn prefix_client_order_id(&self, _client_order_id: &mut String) {}
+
+    fn generate_next_nonce(&self) -> u64 {
+        let now = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_secs()
+            * 1000;
+
+        loop {
+            let current = NONCE_GENERATOR_STATE.load(std::sync::atomic::Ordering::Relaxed);
+
+            let next = if current >= now { current + 1 } else { now };
+
+            if NONCE_GENERATOR_STATE
+                .compare_exchange(
+                    current,
+                    next,
+                    std::sync::atomic::Ordering::Relaxed,
+                    std::sync::atomic::Ordering::Relaxed,
+                )
+                .is_ok()
+            {
+                return next;
+            }
+        }
+    }
 }
 
 #[derive(Debug)]

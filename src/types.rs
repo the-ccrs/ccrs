@@ -50,6 +50,7 @@ pub enum Exchange {
     Bybit,
     Bitget,
     Coinbase,
+    Hyperliquid,
     Okx,
     BinanceSpot,
     BinanceUsdsMarginedFutures,
@@ -74,6 +75,14 @@ pub enum BitgetInstrumentType {
     Spot,
     UsdtFutures,
     CoinFutures,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Hash)]
+pub enum HyperliquidInstrumentType {
+    #[default]
+    Unknown,
+    Spot,
+    Perpetuals,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Hash)]
@@ -103,6 +112,7 @@ pub enum ExchangeInstrumentType {
     Bybit(BybitInstrumentType),
     Bitget(BitgetInstrumentType),
     Coinbase,
+    Hyperliquid(HyperliquidInstrumentType),
     Okx(OkxInstrumentType),
     BinanceSpot,
     BinanceUsdsMarginedFutures,
@@ -193,6 +203,14 @@ pub enum HtxUsdtMarginedFuturesWebSocketEndpoint {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum HyperliquidWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum WebSocketEndpoint {
     #[default]
     Unknown,
@@ -206,6 +224,7 @@ pub enum WebSocketEndpoint {
     GateioPerpetualFutures(GateioPerpetualFuturesWebSocketEndpoint),
     HtxSpot(HtxSpotWebSocketEndpoint),
     HtxUsdtMarginedFutures(HtxUsdtMarginedFuturesWebSocketEndpoint),
+    Hyperliquid(HyperliquidWebSocketEndpoint),
 }
 
 #[derive(Debug, Clone, Default)]
@@ -329,6 +348,18 @@ impl WebSocketClientConfig {
     pub fn htx_usdt_margined_futures_account_data() -> Self {
         Self::new(WebSocketEndpoint::HtxUsdtMarginedFutures(
             HtxUsdtMarginedFuturesWebSocketEndpoint::AccountData,
+        ))
+    }
+
+    pub fn hyperliquid_market_data() -> Self {
+        Self::new(WebSocketEndpoint::Hyperliquid(
+            HyperliquidWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn hyperliquid_account_data() -> Self {
+        Self::new(WebSocketEndpoint::Hyperliquid(
+            HyperliquidWebSocketEndpoint::AccountData,
         ))
     }
 }
