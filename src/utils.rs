@@ -78,3 +78,16 @@ pub fn remove_trailing_zeros(s: &str) -> String {
     let trimmed = s.trim_end_matches('0').trim_end_matches('.');
     trimmed.to_string()
 }
+
+pub fn scale_decimal(value: u64, decimals: u32) -> String {
+    let divisor = 10u64.pow(decimals);
+    let int_part = value / divisor;
+    let frac_part = value % divisor;
+    if frac_part == 0 {
+        return int_part.to_string();
+    }
+    let frac_str = format!("{:0>width$}", frac_part, width = decimals as usize)
+        .trim_end_matches('0')
+        .to_string();
+    format!("{}.{}", int_part, frac_str)
+}

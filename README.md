@@ -9,9 +9,9 @@
   * [HTX](https://www.htx.com/invite/en-us/1f?invite_code=rmw7d223)
   * [Hyperliquid](https://app.hyperliquid.xyz/)
   * [OKX](https://www.okx.com/join/47636709)
-  * Many more coming soon.
-* For any questions, contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5.
-* We provide end-to-end development services for crypto trading infrastructures, covering everything from integration and strategy implementation to real-time data handling and execution.
+  * [Polymarket](https://polymarket.com/?r=theccrs)
+<!-- * For any questions, contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5.
+* We provide end-to-end development services for crypto trading infrastructures, covering everything from integration and strategy implementation to real-time data handling and execution. -->
 
 ## Installation
 Add this to your `Cargo.toml`

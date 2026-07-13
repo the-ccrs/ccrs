@@ -560,6 +560,7 @@ impl crate::exchange_client::websocket::Websocket
                     quantity,
                     quote_quantity: fee,
                     is_maker: !crossed,
+                    ..Default::default()
                 }
             })
             .collect();

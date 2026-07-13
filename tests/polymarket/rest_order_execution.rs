@@ -5,12 +5,13 @@ use ccrs::exchange_client::common::PlaceOrderRequest;
 use ccrs::exchange_client::common::Request;
 use ccrs::exchange_client::common::Response;
 use ccrs::exchange_client::rest::Rest;
-use ccrs::exchanges::hyperliquid::common::HyperliquidClient;
-use ccrs::exchanges::hyperliquid::common::HyperliquidCredential;
+use ccrs::exchanges::polymarket::common::PolymarketClient;
+use ccrs::exchanges::polymarket::common::PolymarketCredential;
 use ccrs::networking::http::HttpConfig;
 use ccrs::types::OrderSide;
 use ccrs::types::OrderType;
 use ccrs::utils::get_env_as_bool;
+use ccrs::utils::get_env_as_number;
 use ccrs::utils::get_env_as_string;
 #[path = "../common.rs"]
 mod common;
@@ -19,26 +20,37 @@ mod common;
 async fn main() {
     common::setup();
 
-    let private_key = get_env_as_string("HYPERLIQUID_PRIVATE_KEY", "");
+    let private_key = get_env_as_string("POLYMARKET_PRIVATE_KEY", "");
     let use_testnet = get_env_as_bool("USE_TESTNET", false);
+
+    // https://docs.polymarket.com/trading/overview#signature-types
+    // Important: funder_address and signature_type must be correct. If incorrect, the order will be rejected.
+    let funder_address = get_env_as_string("POLYMARKET_FUNDER_ADDRESS", "");
+    let signature_type = get_env_as_number::<i64>("POLYMARKET_SIGNATURE_TYPE", 0);
 
     let signing_key = private_key
         .parse::<alloy::signers::local::PrivateKeySigner>()
-        .expect("Invalid HYPERLIQUID_PRIVATE_KEY");
+        .expect("Invalid POLYMARKET_PRIVATE_KEY");
 
-    let credential = HyperliquidCredential::new(signing_key);
+    let credential = PolymarketCredential::from_private_key(signing_key)
+        .await
+        .unwrap();
 
-    let mut hyperliquid_client_builder = HyperliquidClient::builder();
+    let mut polymarket_client_builder = PolymarketClient::builder();
 
     if use_testnet {
-        hyperliquid_client_builder = hyperliquid_client_builder.is_mainnet(false);
+        polymarket_client_builder = polymarket_client_builder.is_mainnet(false);
     }
 
-    let hyperliquid_client = hyperliquid_client_builder
+    let mut polymarket_client = polymarket_client_builder
         .credential(Some(credential))
+        .funder_address(funder_address)
+        .signature_type(signature_type)
         .build();
 
-    let http_client = match hyperliquid_client
+    polymarket_client.initialize_sdk_client().await.unwrap();
+
+    let http_client = match polymarket_client
         .create_http_client(HttpConfig::default())
         .await
     {
@@ -50,20 +62,15 @@ async fn main() {
     };
 
     let price = get_env_as_string("PRICE", "");
-    let symbol_env = get_env_as_string("SYMBOL", "BTC");
-    let symbol = match symbol_env.as_str() {
-        "BTC" => "0".to_string(),
-        "BTC/USDC" => "10142".to_string(),
-        _ => panic!(),
-    };
+    let symbol = get_env_as_string("SYMBOL", "");
     let side = get_env_as_string("SIDE", "");
 
-    match hyperliquid_client
+    match polymarket_client
         .send_http_request(
             &http_client,
             Request::PlaceOrder(PlaceOrderRequest {
                 symbol: symbol.clone(),
-                client_order_id: hyperliquid_client.generate_next_client_order_id(),
+                client_order_id: polymarket_client.generate_next_client_order_id(),
                 order_type: if price.is_empty() {
                     OrderType::Market
                 } else {
@@ -90,7 +97,7 @@ async fn main() {
         _ => unreachable!(),
     }
 
-    let orders: Vec<String> = match hyperliquid_client
+    let orders: Vec<String> = match polymarket_client
         .send_http_request(
             &http_client,
             Request::GetOpenOrder(GetOpenOrderRequest {
@@ -107,7 +114,7 @@ async fn main() {
     };
 
     for order_id in orders {
-        match hyperliquid_client
+        match polymarket_client
             .send_http_request(
                 &http_client,
                 Request::CancelOrder(CancelOrderRequest {

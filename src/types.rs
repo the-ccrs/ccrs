@@ -43,6 +43,16 @@ pub enum OrderStatus {
     Expired,
 }
 
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub enum FillStatus {
+    #[default]
+    Confirmed,
+    Matched,
+    Mined,
+    Retrying,
+    Failed,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Hash)]
 pub enum Exchange {
     #[default]
@@ -58,6 +68,7 @@ pub enum Exchange {
     GateioPerpetualFutures,
     HtxSpot,
     HtxUsdtMarginedFutures,
+    Polymarket,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Hash)]
@@ -120,6 +131,7 @@ pub enum ExchangeInstrumentType {
     GateioPerpetualFutures,
     HtxSpot,
     HtxUsdtMarginedFutures,
+    Polymarket,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -211,6 +223,14 @@ pub enum HyperliquidWebSocketEndpoint {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum PolymarketWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum WebSocketEndpoint {
     #[default]
     Unknown,
@@ -225,6 +245,7 @@ pub enum WebSocketEndpoint {
     HtxSpot(HtxSpotWebSocketEndpoint),
     HtxUsdtMarginedFutures(HtxUsdtMarginedFuturesWebSocketEndpoint),
     Hyperliquid(HyperliquidWebSocketEndpoint),
+    Polymarket(PolymarketWebSocketEndpoint),
 }
 
 #[derive(Debug, Clone, Default)]
@@ -362,6 +383,18 @@ impl WebSocketClientConfig {
             HyperliquidWebSocketEndpoint::AccountData,
         ))
     }
+
+    pub fn polymarket_market_data() -> Self {
+        Self::new(WebSocketEndpoint::Polymarket(
+            PolymarketWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn polymarket_account_data() -> Self {
+        Self::new(WebSocketEndpoint::Polymarket(
+            PolymarketWebSocketEndpoint::AccountData,
+        ))
+    }
 }
 
 #[derive(Debug, Default)]
@@ -381,6 +414,7 @@ pub struct InstrumentInfo {
     pub contract_size: String,
     pub contract_multiplier: String,
     pub expiry_timestamp: chrono::DateTime<chrono::Utc>,
+    pub negative_risk: bool,
 }
 
 #[derive(Debug, Default)]
@@ -437,6 +471,7 @@ pub struct Fill {
     pub quantity: String,
     pub quote_quantity: String,
     pub is_maker: bool,
+    pub status: crate::types::FillStatus,
 }
 
 #[derive(Debug, Default)]

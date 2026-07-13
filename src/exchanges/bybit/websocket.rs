@@ -432,6 +432,7 @@ impl crate::exchange_client::websocket::Websocket for crate::exchanges::bybit::c
                     quantity,
                     quote_quantity,
                     is_maker,
+                    ..Default::default()
                 }
             })
             .collect();

@@ -36,6 +36,16 @@ pub trait Rest {
         unimplemented!()
     }
 
+    async fn prepare_place_order_http_request(
+        &self,
+        place_order_request: &crate::exchange_client::common::PlaceOrderRequest,
+        now: chrono::DateTime<chrono::Utc>,
+    ) -> crate::networking::http::HttpRequest {
+        let mut http_request = self.create_place_order_http_request(place_order_request);
+        self.sign_http_request(&mut http_request, now);
+        http_request
+    }
+
     fn create_cancel_order_http_request(
         &self,
         _: &crate::exchange_client::common::CancelOrderRequest,
@@ -153,9 +163,8 @@ pub trait Rest {
                 self.create_get_top_of_book_http_request(get_top_of_book_request)
             }
             crate::exchange_client::common::Request::PlaceOrder(place_order_request) => {
-                let mut http_request = self.create_place_order_http_request(place_order_request);
-                self.sign_http_request(&mut http_request, now);
-                http_request
+                self.prepare_place_order_http_request(place_order_request, now)
+                    .await
             }
             crate::exchange_client::common::Request::CancelOrder(cancel_order_request) => {
                 let mut http_request = self.create_cancel_order_http_request(cancel_order_request);

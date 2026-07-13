@@ -520,7 +520,8 @@ impl crate::exchange_client::websocket::Websocket
                     price,
                     quantity,
                     quote_quantity,
-                    is_maker
+                    is_maker,
+                    ..Default::default()
                 }
             })
             .collect()
