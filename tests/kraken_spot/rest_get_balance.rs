@@ -2,9 +2,9 @@ use ccrs::exchange_client::common::GetBalanceRequest;
 use ccrs::exchange_client::common::Request;
 use ccrs::exchange_client::common::Response;
 use ccrs::exchange_client::rest::Rest;
-use ccrs::exchanges::hyperliquid::common::HyperliquidClient;
+use ccrs::exchanges::kraken_spot::common::KrakenSpotClient;
+use ccrs::exchanges::kraken_spot::common::KrakenSpotCredential;
 use ccrs::networking::http::HttpConfig;
-use ccrs::utils::get_env_as_bool;
 use ccrs::utils::get_env_as_string;
 #[path = "../common.rs"]
 mod common;
@@ -13,20 +13,19 @@ mod common;
 async fn main() {
     common::setup();
 
-    let use_testnet = get_env_as_bool("USE_TESTNET", false);
-    let wallet_address = get_env_as_string("HYPERLIQUID_WALLET_ADDRESS", "");
+    let api_key = get_env_as_string("KRAKEN_SPOT_API_KEY", "");
+    let api_secret = get_env_as_string("KRAKEN_SPOT_API_SECRET", "");
 
-    let mut hyperliquid_client_builder = HyperliquidClient::builder();
+    let credential = KrakenSpotCredential {
+        api_key,
+        api_secret,
+    };
 
-    if use_testnet {
-        hyperliquid_client_builder = hyperliquid_client_builder.is_mainnet(false);
-    }
-
-    let hyperliquid_client = hyperliquid_client_builder
-        .wallet_address(wallet_address)
+    let kraken_spot_client = KrakenSpotClient::builder()
+        .credential(Some(credential))
         .build();
 
-    let http_client = match hyperliquid_client
+    let http_client = match kraken_spot_client
         .create_http_client(HttpConfig::default())
         .await
     {
@@ -37,7 +36,7 @@ async fn main() {
         }
     };
 
-    match hyperliquid_client
+    match kraken_spot_client
         .send_http_request(
             &http_client,
             Request::GetBalance(GetBalanceRequest {

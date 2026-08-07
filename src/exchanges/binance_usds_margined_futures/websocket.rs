@@ -101,8 +101,9 @@ impl crate::exchange_client::websocket::Websocket
                     let cancellation_token = websocket_client.cancellation_token().clone();
 
                     tokio::spawn(async move {
-                        let mut interval =
-                            tokio::time::interval(std::time::Duration::from_secs(30 * 60));
+                        let mut interval = tokio::time::interval(std::time::Duration::from_secs(
+                            3600_u64.div_ceil(4),
+                        ));
                         interval.tick().await;
 
                         loop {

@@ -61,6 +61,8 @@ pub enum Exchange {
     Bitget,
     Coinbase,
     Hyperliquid,
+    KrakenDerivatives,
+    KrakenSpot,
     Okx,
     BinanceSpot,
     BinanceUsdsMarginedFutures,
@@ -124,6 +126,8 @@ pub enum ExchangeInstrumentType {
     Bitget(BitgetInstrumentType),
     Coinbase,
     Hyperliquid(HyperliquidInstrumentType),
+    KrakenDerivatives,
+    KrakenSpot,
     Okx(OkxInstrumentType),
     BinanceSpot,
     BinanceUsdsMarginedFutures,
@@ -231,6 +235,22 @@ pub enum PolymarketWebSocketEndpoint {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum KrakenSpotWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum KrakenDerivativesWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum WebSocketEndpoint {
     #[default]
     Unknown,
@@ -246,6 +266,8 @@ pub enum WebSocketEndpoint {
     HtxUsdtMarginedFutures(HtxUsdtMarginedFuturesWebSocketEndpoint),
     Hyperliquid(HyperliquidWebSocketEndpoint),
     Polymarket(PolymarketWebSocketEndpoint),
+    KrakenSpot(KrakenSpotWebSocketEndpoint),
+    KrakenDerivatives(KrakenDerivativesWebSocketEndpoint),
 }
 
 #[derive(Debug, Clone, Default)]
@@ -393,6 +415,30 @@ impl WebSocketClientConfig {
     pub fn polymarket_account_data() -> Self {
         Self::new(WebSocketEndpoint::Polymarket(
             PolymarketWebSocketEndpoint::AccountData,
+        ))
+    }
+
+    pub fn kraken_spot_market_data() -> Self {
+        Self::new(WebSocketEndpoint::KrakenSpot(
+            KrakenSpotWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn kraken_spot_account_data() -> Self {
+        Self::new(WebSocketEndpoint::KrakenSpot(
+            KrakenSpotWebSocketEndpoint::AccountData,
+        ))
+    }
+
+    pub fn kraken_derivatives_market_data() -> Self {
+        Self::new(WebSocketEndpoint::KrakenDerivatives(
+            KrakenDerivativesWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn kraken_derivatives_account_data() -> Self {
+        Self::new(WebSocketEndpoint::KrakenDerivatives(
+            KrakenDerivativesWebSocketEndpoint::AccountData,
         ))
     }
 }

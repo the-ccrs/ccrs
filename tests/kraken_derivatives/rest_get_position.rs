@@ -2,10 +2,9 @@ use ccrs::exchange_client::common::GetPositionRequest;
 use ccrs::exchange_client::common::Request;
 use ccrs::exchange_client::common::Response;
 use ccrs::exchange_client::rest::Rest;
-use ccrs::exchanges::binance_usds_margined_futures::common::BinanceUsdsMarginedFuturesClient;
-use ccrs::exchanges::binance_usds_margined_futures::common::BinanceUsdsMarginedFuturesCredential;
+use ccrs::exchanges::kraken_derivatives::common::KrakenDerivativesClient;
+use ccrs::exchanges::kraken_derivatives::common::KrakenDerivativesCredential;
 use ccrs::networking::http::HttpConfig;
-use ccrs::utils::get_env_as_bool;
 use ccrs::utils::get_env_as_string;
 #[path = "../common.rs"]
 mod common;
@@ -14,27 +13,28 @@ mod common;
 async fn main() {
     common::setup();
 
-    let api_key = get_env_as_string("BINANCE_USDS_MARGINED_FUTURES_API_KEY", "");
-    let api_private_key_path =
-        get_env_as_string("BINANCE_USDS_MARGINED_FUTURES_API_PRIVATE_KEY_PATH", "");
+    let api_key = get_env_as_string("KRAKEN_DERIVATIVES_API_KEY", "");
+    let api_secret = get_env_as_string("KRAKEN_DERIVATIVES_API_SECRET", "");
 
-    let credential =
-        BinanceUsdsMarginedFuturesCredential::from_pem_file(api_key, &api_private_key_path);
-    let use_demo_trading = get_env_as_bool("USE_DEMO_TRADING", false);
+    let credential = KrakenDerivativesCredential {
+        api_key,
+        api_secret,
+    };
 
-    let mut binance_usds_margined_futures_client_builder =
-        BinanceUsdsMarginedFuturesClient::builder();
+    let rest_api_base_url = get_env_as_string("KRAKEN_DERIVATIVES_REST_API_BASE_URL", "");
 
-    if use_demo_trading {
-        binance_usds_margined_futures_client_builder = binance_usds_margined_futures_client_builder
-            .rest_api_base_url("https://demo-fapi.binance.com");
+    let mut kraken_derivatives_client_builder = KrakenDerivativesClient::builder();
+
+    if !rest_api_base_url.is_empty() {
+        kraken_derivatives_client_builder =
+            kraken_derivatives_client_builder.rest_api_base_url(rest_api_base_url)
     }
 
-    let binance_usds_margined_futures_client = binance_usds_margined_futures_client_builder
+    let kraken_derivatives_client = kraken_derivatives_client_builder
         .credential(Some(credential))
         .build();
 
-    let http_client = match binance_usds_margined_futures_client
+    let http_client = match kraken_derivatives_client
         .create_http_client(HttpConfig::default())
         .await
     {
@@ -45,7 +45,7 @@ async fn main() {
         }
     };
 
-    match binance_usds_margined_futures_client
+    match kraken_derivatives_client
         .send_http_request(
             &http_client,
             Request::GetPosition(GetPositionRequest {

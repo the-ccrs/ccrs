@@ -56,8 +56,10 @@ async fn main() {
         Response::GetBalance(data) => {
             println!("Got balance: {:#?}", data);
         }
-        Response::HttpErrorResponse(http_response) => {
-            println!("HTTP response: {:#?}", http_response);
+        Response::HttpErrorResponse(http_resp) => {
+            println!("HTTP error, status: {}", http_resp.status);
+            println!("Headers: {:#?}", http_resp.headers);
+            println!("Body: {:#?}", http_resp.body);
         }
         _ => unreachable!(),
     }

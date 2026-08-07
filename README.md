@@ -8,6 +8,8 @@
   * [Gate](https://www.gate.com/signup/VLUQXVFWAW?ref_type=103)
   * [HTX](https://www.htx.com/invite/en-us/1f?invite_code=rmw7d223)
   * [Hyperliquid](https://app.hyperliquid.xyz/)
+  * [Kraken](https://invite.kraken.com/JDNW/m1bdq24q)
+  <!-- * [Lighter](https://app.lighter.xyz/?referral=734187JC) -->
   * [OKX](https://www.okx.com/join/47636709)
   * [Polymarket](https://polymarket.com/?r=theccrs)
 <!-- * For any questions, contact us on Telegram https://t.me/+NvPBKXi6kFNkYmE5.
