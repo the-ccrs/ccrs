@@ -229,3 +229,12 @@ impl BitgetClientBuilder {
 
 #[async_trait::async_trait]
 impl crate::exchange_client::common::Common for BitgetClient {}
+
+pub(super) fn category_to_instrument_type(category: &str) -> crate::types::BitgetInstrumentType {
+    match category.to_uppercase().as_str() {
+        "SPOT" => crate::types::BitgetInstrumentType::Spot,
+        "USDT-FUTURES" => crate::types::BitgetInstrumentType::UsdtFutures,
+        "COIN-FUTURES" => crate::types::BitgetInstrumentType::CoinFutures,
+        other => panic!("Unknown instrument category: {other}"),
+    }
+}

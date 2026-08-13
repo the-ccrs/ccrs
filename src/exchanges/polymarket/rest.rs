@@ -397,7 +397,9 @@ impl crate::exchange_client::rest::Rest for crate::exchanges::polymarket::common
                         symbol: clob_token_id.clone(),
                         order_price_increment,
                         order_quantity_min,
-                        negative_risk,
+                        exchange_specific: crate::types::ExchangeSpecificInstrumentInfo::Polymarket(
+                            crate::types::PolymarketSpecificInstrumentInfo { negative_risk },
+                        ),
                         expiry_timestamp,
                         ..Default::default()
                     });

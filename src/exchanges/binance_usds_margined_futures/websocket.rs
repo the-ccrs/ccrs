@@ -33,6 +33,7 @@ impl crate::exchange_client::websocket::Websocket
                 crate::networking::websocket::WebSocketClient::builder(
                     self.websocket_api_url(websocket_client_config.endpoint),
                     websocket_config.clone(),
+                    None,
                 )
                 .build()
                 .await?
@@ -91,6 +92,7 @@ impl crate::exchange_client::websocket::Websocket
                 let websocket_client = crate::networking::websocket::WebSocketClient::builder(
                     url,
                     websocket_config.clone(),
+                    None,
                 )
                 .build()
                 .await?;
@@ -395,7 +397,7 @@ impl crate::exchange_client::websocket::Websocket
         panic!()
     }
 
-    fn is_unexpected_websocket_text_subscription_data_benign(
+    fn is_websocket_text_unneeded_subscription_data(
         &self,
         websocket_text: &crate::networking::websocket::WebSocketText,
     ) -> bool {

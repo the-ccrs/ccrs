@@ -145,10 +145,12 @@ impl WebSocketClient {
     pub fn builder(
         url: impl Into<String>,
         websocket_config: WebSocketConfig,
+        headers: Option<Vec<(String, String)>>,
     ) -> WebSocketClientBuilder {
         WebSocketClientBuilder {
             url: url.into(),
             websocket_config,
+            headers,
         }
     }
 }
@@ -157,6 +159,7 @@ impl WebSocketClient {
 pub struct WebSocketClientBuilder {
     url: String,
     websocket_config: WebSocketConfig,
+    headers: Option<Vec<(String, String)>>,
 }
 
 impl WebSocketClientBuilder {
@@ -238,11 +241,27 @@ impl WebSocketClientBuilder {
                     tokio_tungstenite::MaybeTlsStream::Plain(tcp_stream)
                 };
 
-            let request =
+            let mut request =
                 tokio_tungstenite::tungstenite::client::IntoClientRequest::into_client_request(
                     self.url.clone(),
                 )?;
 
+            if let Some(headers) = &self.headers {
+                for (name, value) in headers {
+                    request.headers_mut().insert(
+                        tokio_tungstenite::tungstenite::http::header::HeaderName::from_bytes(
+                            name.as_bytes(),
+                        )
+                        .map_err(|e| anyhow::anyhow!("Invalid header name '{}': {}", name, e))?,
+                        tokio_tungstenite::tungstenite::http::header::HeaderValue::from_str(value)
+                            .map_err(|e| {
+                                anyhow::anyhow!("Invalid header value for '{}': {}", name, e)
+                            })?,
+                    );
+                }
+            }
+
+            crate::fine!("WebSocket handshake request:\n{:#?}", request);
             let result = tokio_tungstenite::client_async(request, stream).await;
 
             match result {

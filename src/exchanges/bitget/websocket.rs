@@ -224,7 +224,7 @@ impl crate::exchange_client::websocket::Websocket
         )
     }
 
-    fn is_unexpected_websocket_text_subscription_data_benign(
+    fn is_websocket_text_unneeded_subscription_data(
         &self,
         _: &crate::networking::websocket::WebSocketText,
     ) -> bool {
@@ -356,7 +356,9 @@ impl crate::exchange_client::websocket::Websocket
 
                         crate::types::Order {
                             exchange_instrument_type: crate::types::ExchangeInstrumentType::Bitget(
-                                self.instrument_type,
+                                crate::exchanges::bitget::common::category_to_instrument_type(
+                                    v.get("category").and_then(|v| v.as_str()).unwrap(),
+                                ),
                             ),
                             symbol: v["symbol"].as_str().unwrap_or("").to_string(),
                             order_id: v["orderId"].as_str().unwrap_or("").to_string(),
@@ -431,7 +433,9 @@ impl crate::exchange_client::websocket::Websocket
 
                         crate::types::Fill {
                             exchange_instrument_type: crate::types::ExchangeInstrumentType::Bitget(
-                                self.instrument_type,
+                                crate::exchanges::bitget::common::category_to_instrument_type(
+                                    data.get("category").and_then(|v| v.as_str()).unwrap(),
+                                ),
                             ),
                             symbol: data
                                 .get("symbol")

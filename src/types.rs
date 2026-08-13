@@ -71,6 +71,7 @@ pub enum Exchange {
     HtxSpot,
     HtxUsdtMarginedFutures,
     Polymarket,
+    Kalshi,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Hash)]
@@ -136,6 +137,7 @@ pub enum ExchangeInstrumentType {
     HtxSpot,
     HtxUsdtMarginedFutures,
     Polymarket,
+    Kalshi,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -251,6 +253,14 @@ pub enum KrakenDerivativesWebSocketEndpoint {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum KalshiWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum WebSocketEndpoint {
     #[default]
     Unknown,
@@ -268,6 +278,7 @@ pub enum WebSocketEndpoint {
     Polymarket(PolymarketWebSocketEndpoint),
     KrakenSpot(KrakenSpotWebSocketEndpoint),
     KrakenDerivatives(KrakenDerivativesWebSocketEndpoint),
+    Kalshi(KalshiWebSocketEndpoint),
 }
 
 #[derive(Debug, Clone, Default)]
@@ -441,6 +452,18 @@ impl WebSocketClientConfig {
             KrakenDerivativesWebSocketEndpoint::AccountData,
         ))
     }
+
+    pub fn kalshi_market_data() -> Self {
+        Self::new(WebSocketEndpoint::Kalshi(
+            KalshiWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn kalshi_account_data() -> Self {
+        Self::new(WebSocketEndpoint::Kalshi(
+            KalshiWebSocketEndpoint::AccountData,
+        ))
+    }
 }
 
 #[derive(Debug, Default)]
@@ -460,7 +483,19 @@ pub struct InstrumentInfo {
     pub contract_size: String,
     pub contract_multiplier: String,
     pub expiry_timestamp: chrono::DateTime<chrono::Utc>,
+    pub exchange_specific: ExchangeSpecificInstrumentInfo,
+}
+
+#[derive(Debug, Default)]
+pub struct PolymarketSpecificInstrumentInfo {
     pub negative_risk: bool,
+}
+
+#[derive(Debug, Default)]
+pub enum ExchangeSpecificInstrumentInfo {
+    #[default]
+    Unknown,
+    Polymarket(PolymarketSpecificInstrumentInfo),
 }
 
 #[derive(Debug, Default)]

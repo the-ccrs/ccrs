@@ -1,6 +1,6 @@
 [package]
 name = "ccrs"
-version = "0.12.0"
+version = "0.13.0"
 edition = "2024"
 
 [package.metadata.release]
@@ -41,6 +41,7 @@ hmac = "0.13"
 hmac-sha256 = "1.1"
 native-tls = "0.2"
 once_cell = "1"
+openssl = "0.10"
 polymarket_client_sdk_v2 = { version = "0.6", features = ["clob"] }
 
 reqwest = { version = "0.13", default-features = false, features = ["json", "native-tls"] }

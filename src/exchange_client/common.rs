@@ -116,6 +116,7 @@ pub enum Response {
     HttpRequestError(anyhow::Error),
     HttpErrorResponse(crate::networking::http::HttpResponse),
 
+    Unneeded(crate::networking::websocket::WebSocketText),
     Authenticate(AuthenticateResponse),
     Subscribe(SubscribeResponse),
     Heartbeat(HeartbeatResponse),
@@ -136,6 +137,7 @@ pub enum Response {
 pub struct GetInstrumentInfoRequest {
     pub symbol: String,
     pub limit: u32,
+    pub status: String,
     pub next_page_cursor: String,
 }
 

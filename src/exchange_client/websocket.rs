@@ -8,6 +8,7 @@ pub trait Websocket {
         let mut websocket_client = crate::networking::websocket::WebSocketClient::builder(
             self.websocket_api_url(websocket_client_config.endpoint),
             websocket_config.clone(),
+            None,
         )
         .build()
         .await?;
@@ -345,8 +346,8 @@ pub trait Websocket {
                 return self.create_subscribe_order_websocket_subscription_data(&websocket_text);
             } else if self.is_websocket_text_fill_subscription_data(&websocket_text) {
                 return self.create_subscribe_fill_websocket_subscription_data(&websocket_text);
-            } else if self.is_unexpected_websocket_text_subscription_data_benign(&websocket_text) {
-                return crate::exchange_client::common::Response::None;
+            } else if self.is_websocket_text_unneeded_subscription_data(&websocket_text) {
+                return crate::exchange_client::common::Response::Unneeded(websocket_text);
             }
             panic!(
                 "Unexpected websocket subscription data: {:#?}",
@@ -399,7 +400,7 @@ pub trait Websocket {
         websocket_text: &crate::networking::websocket::WebSocketText,
     ) -> bool;
 
-    fn is_unexpected_websocket_text_subscription_data_benign(
+    fn is_websocket_text_unneeded_subscription_data(
         &self,
         websocket_text: &crate::networking::websocket::WebSocketText,
     ) -> bool;

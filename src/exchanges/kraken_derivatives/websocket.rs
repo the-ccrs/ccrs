@@ -252,7 +252,7 @@ impl crate::exchange_client::websocket::Websocket
         )
     }
 
-    fn is_unexpected_websocket_text_subscription_data_benign(
+    fn is_websocket_text_unneeded_subscription_data(
         &self,
         _websocket_text: &crate::networking::websocket::WebSocketText,
     ) -> bool {
