@@ -154,6 +154,7 @@ pub struct PlaceOrderRequest {
     pub side: crate::types::OrderSide,
     pub price: String,
     pub quantity: String,
+    pub leverage: String,
 }
 
 #[derive(Debug, Default)]

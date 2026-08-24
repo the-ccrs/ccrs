@@ -1,8 +1,9 @@
 # ccrs
-* A Rust library for trading on crypto exchanges. Super simple to use.
-* Unified API for different exchanges. Supported exchanges:
+* A simple, unified Rust library for trading across crypto and prediction markets.
+* A unified API for multiple exchanges. Supported exchanges:
   * [Binance](https://accounts.maxweb.black/register?ref=1116718520)
   * [Bitget](https://bonus.bitget.com/0V0WA1)
+  * [Bitstamp](https://www.bitstamp.net/)
   * [Bybit](https://www.bybit.com/invite?ref=XNYP2K)
   * [Coinbase](https://advanced.coinbase.com/join/CKGCX6U)
   * [Gate](https://www.gate.com/signup/VLUQXVFWAW?ref_type=103)
@@ -43,7 +44,7 @@ Our documentation is centered around comprehensive, real-world examples that dem
 * [Enable library logging](examples/enable_library_logging.rs) — `cargo run --example enable_library_logging --features max_log_level_finest`
 * [Connect to proxy](examples/connect_to_proxy.rs) — `cargo run --example connect_to_proxy`
 
-More exchange specific examples can be found in the [`tests`](tests) directory.
+More exchange-specific examples can be found in the [`tests`](tests) directory. Since each exchange has its own implementation details and nuances, we recommend reviewing the tests to better understand the exchange-specific behavior and usage.
 
 <!-- ## Source Code Visibility
 * REST API source code is fully available.

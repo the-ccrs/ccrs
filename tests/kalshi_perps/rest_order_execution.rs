@@ -5,11 +5,12 @@ use ccrs::exchange_client::common::PlaceOrderRequest;
 use ccrs::exchange_client::common::Request;
 use ccrs::exchange_client::common::Response;
 use ccrs::exchange_client::rest::Rest;
-use ccrs::exchanges::kraken_spot::common::KrakenSpotClient;
-use ccrs::exchanges::kraken_spot::common::KrakenSpotCredential;
+use ccrs::exchanges::kalshi_perps::common::KalshiPerpsClient;
+use ccrs::exchanges::kalshi_perps::common::KalshiPerpsCredential;
 use ccrs::networking::http::HttpConfig;
 use ccrs::types::OrderSide;
 use ccrs::types::OrderType;
+use ccrs::utils::get_env_as_bool;
 use ccrs::utils::get_env_as_string;
 #[path = "../common.rs"]
 mod common;
@@ -18,19 +19,21 @@ mod common;
 async fn main() {
     common::setup();
 
-    let api_key = get_env_as_string("KRAKEN_SPOT_API_KEY", "");
-    let api_secret = get_env_as_string("KRAKEN_SPOT_API_SECRET", "");
+    let api_key = get_env_as_string("KALSHI_PERPS_API_KEY", "");
+    let private_key_path = get_env_as_string("KALSHI_PERPS_PRIVATE_KEY_PATH", "");
 
-    let credential = KrakenSpotCredential {
-        api_key,
-        api_secret,
-    };
+    let credential = KalshiPerpsCredential::new(api_key, private_key_path);
 
-    let kraken_spot_client = KrakenSpotClient::builder()
+    let mut kalshi_perps_client_builder = KalshiPerpsClient::builder();
+
+    kalshi_perps_client_builder = kalshi_perps_client_builder
+        .use_demo_trading(Some(get_env_as_bool("USE_DEMO_TRADING", false)));
+
+    let kalshi_perps_client = kalshi_perps_client_builder
         .credential(Some(credential))
         .build();
 
-    let http_client = match kraken_spot_client
+    let http_client = match kalshi_perps_client
         .create_http_client(HttpConfig::default())
         .await
     {
@@ -42,19 +45,24 @@ async fn main() {
     };
 
     let price = get_env_as_string("PRICE", "");
+    let symbol = get_env_as_string("SYMBOL", "");
+    let side = match get_env_as_string("SIDE", "buy").to_lowercase().as_str() {
+        "sell" => OrderSide::Sell,
+        _ => OrderSide::Buy,
+    };
 
-    match kraken_spot_client
+    match kalshi_perps_client
         .send_http_request(
             &http_client,
             Request::PlaceOrder(PlaceOrderRequest {
-                symbol: get_env_as_string("SYMBOL", "USDCUSD"),
-                client_order_id: kraken_spot_client.generate_next_client_order_id(),
+                symbol: symbol.clone(),
+                client_order_id: kalshi_perps_client.generate_next_client_order_id(),
                 order_type: if price.is_empty() {
                     OrderType::Market
                 } else {
                     OrderType::Limit
                 },
-                side: OrderSide::Buy,
+                side,
                 price,
                 quantity: get_env_as_string("QUANTITY", ""),
                 ..Default::default()
@@ -73,7 +81,7 @@ async fn main() {
         _ => unreachable!(),
     }
 
-    let order_ids: Vec<String> = match kraken_spot_client
+    let order_ids: Vec<String> = match kalshi_perps_client
         .send_http_request(
             &http_client,
             Request::GetOpenOrder(GetOpenOrderRequest {
@@ -90,10 +98,11 @@ async fn main() {
     };
 
     for order_id in order_ids {
-        match kraken_spot_client
+        match kalshi_perps_client
             .send_http_request(
                 &http_client,
                 Request::CancelOrder(CancelOrderRequest {
+                    symbol: symbol.clone(),
                     order_id,
                     ..Default::default()
                 }),

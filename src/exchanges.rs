@@ -1,6 +1,7 @@
 pub mod binance_spot;
 pub mod binance_usds_margined_futures;
 pub mod bitget;
+pub mod bitstamp;
 pub mod bybit;
 pub mod coinbase;
 pub mod gateio_perpetual_futures;
@@ -9,6 +10,7 @@ pub mod htx_spot;
 pub mod htx_usdt_margined_futures;
 pub mod hyperliquid;
 pub mod kalshi;
+pub mod kalshi_perps;
 pub mod kraken_derivatives;
 pub mod kraken_spot;
 pub mod okx;

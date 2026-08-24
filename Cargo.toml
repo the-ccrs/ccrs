@@ -1,6 +1,6 @@
 [package]
 name = "ccrs"
-version = "0.13.0"
+version = "0.15.0"
 edition = "2024"
 
 [package.metadata.release]
@@ -29,7 +29,7 @@ native-tls = ["reqwest/native-tls", "tokio-tungstenite/native-tls"]
 alloy = { version = "2.0", default-features = false, features = ["signer-local"] }
 anyhow = "1"
 async-trait = "0.1"
-base64 = "0.22"
+base64 = "0.23"
 bytes = "1"
 chrono = { version = "0.4", features = ["clock"] }
 ed25519-dalek = { version = "2", features = ["pkcs8"] }

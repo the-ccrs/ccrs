@@ -5,11 +5,12 @@ use ccrs::exchange_client::common::PlaceOrderRequest;
 use ccrs::exchange_client::common::Request;
 use ccrs::exchange_client::common::Response;
 use ccrs::exchange_client::rest::Rest;
-use ccrs::exchanges::kraken_spot::common::KrakenSpotClient;
-use ccrs::exchanges::kraken_spot::common::KrakenSpotCredential;
+use ccrs::exchanges::bitstamp::common::BitstampClient;
+use ccrs::exchanges::bitstamp::common::BitstampCredential;
 use ccrs::networking::http::HttpConfig;
 use ccrs::types::OrderSide;
 use ccrs::types::OrderType;
+use ccrs::utils::get_env_as_bool;
 use ccrs::utils::get_env_as_string;
 #[path = "../common.rs"]
 mod common;
@@ -18,19 +19,26 @@ mod common;
 async fn main() {
     common::setup();
 
-    let api_key = get_env_as_string("KRAKEN_SPOT_API_KEY", "");
-    let api_secret = get_env_as_string("KRAKEN_SPOT_API_SECRET", "");
+    let api_key = get_env_as_string("BITSTAMP_API_KEY", "");
+    let api_secret = get_env_as_string("BITSTAMP_API_SECRET", "");
 
-    let credential = KrakenSpotCredential {
+    let credential = BitstampCredential {
         api_key,
         api_secret,
     };
 
-    let kraken_spot_client = KrakenSpotClient::builder()
-        .credential(Some(credential))
-        .build();
+    let use_sandbox = get_env_as_bool("USE_SANDBOX", false);
 
-    let http_client = match kraken_spot_client
+    let mut bitstamp_client_builder = BitstampClient::builder();
+
+    if use_sandbox {
+        bitstamp_client_builder =
+            bitstamp_client_builder.rest_api_base_url("https://sandbox.bitstamp.net");
+    }
+
+    let bitstamp_client = bitstamp_client_builder.credential(Some(credential)).build();
+
+    let http_client = match bitstamp_client
         .create_http_client(HttpConfig::default())
         .await
     {
@@ -42,22 +50,31 @@ async fn main() {
     };
 
     let price = get_env_as_string("PRICE", "");
+    let side = match get_env_as_string("SIDE", "buy").to_lowercase().as_str() {
+        "sell" => OrderSide::Sell,
+        _ => OrderSide::Buy,
+    };
+    let symbol = get_env_as_string("SYMBOL", "btcusd");
 
-    match kraken_spot_client
+    match bitstamp_client
         .send_http_request(
             &http_client,
             Request::PlaceOrder(PlaceOrderRequest {
-                symbol: get_env_as_string("SYMBOL", "USDCUSD"),
-                client_order_id: kraken_spot_client.generate_next_client_order_id(),
+                symbol: symbol.clone(),
+                client_order_id: bitstamp_client.generate_next_client_order_id(),
                 order_type: if price.is_empty() {
                     OrderType::Market
                 } else {
                     OrderType::Limit
                 },
-                side: OrderSide::Buy,
+                side,
                 price,
                 quantity: get_env_as_string("QUANTITY", ""),
-                ..Default::default()
+                leverage: if BitstampClient::is_instrument_derivatives(&symbol) {
+                    "1".to_string()
+                } else {
+                    String::new()
+                },
             }),
         )
         .await
@@ -73,7 +90,7 @@ async fn main() {
         _ => unreachable!(),
     }
 
-    let order_ids: Vec<String> = match kraken_spot_client
+    let order_ids: Vec<String> = match bitstamp_client
         .send_http_request(
             &http_client,
             Request::GetOpenOrder(GetOpenOrderRequest {
@@ -90,7 +107,7 @@ async fn main() {
     };
 
     for order_id in order_ids {
-        match kraken_spot_client
+        match bitstamp_client
             .send_http_request(
                 &http_client,
                 Request::CancelOrder(CancelOrderRequest {

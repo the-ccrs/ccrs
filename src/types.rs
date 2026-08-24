@@ -59,6 +59,7 @@ pub enum Exchange {
     Unknown,
     Bybit,
     Bitget,
+    Bitstamp,
     Coinbase,
     Hyperliquid,
     KrakenDerivatives,
@@ -72,6 +73,7 @@ pub enum Exchange {
     HtxUsdtMarginedFutures,
     Polymarket,
     Kalshi,
+    KalshiPerps,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Hash)]
@@ -125,6 +127,7 @@ pub enum ExchangeInstrumentType {
     Unknown,
     Bybit(BybitInstrumentType),
     Bitget(BitgetInstrumentType),
+    Bitstamp,
     Coinbase,
     Hyperliquid(HyperliquidInstrumentType),
     KrakenDerivatives,
@@ -138,10 +141,19 @@ pub enum ExchangeInstrumentType {
     HtxUsdtMarginedFutures,
     Polymarket,
     Kalshi,
+    KalshiPerps,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum BitgetWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum BitstampWebSocketEndpoint {
     #[default]
     Unknown,
     MarketData,
@@ -261,11 +273,20 @@ pub enum KalshiWebSocketEndpoint {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum KalshiPerpsWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum WebSocketEndpoint {
     #[default]
     Unknown,
     Bybit(BybitWebSocketEndpoint),
     Bitget(BitgetWebSocketEndpoint),
+    Bitstamp(BitstampWebSocketEndpoint),
     Okx(OkxWebSocketEndpoint),
     Coinbase(CoinbaseWebSocketEndpoint),
     BinanceSpot(BinanceSpotWebSocketEndpoint),
@@ -279,6 +300,7 @@ pub enum WebSocketEndpoint {
     KrakenSpot(KrakenSpotWebSocketEndpoint),
     KrakenDerivatives(KrakenDerivativesWebSocketEndpoint),
     Kalshi(KalshiWebSocketEndpoint),
+    KalshiPerps(KalshiPerpsWebSocketEndpoint),
 }
 
 #[derive(Debug, Clone, Default)]
@@ -310,6 +332,18 @@ impl WebSocketClientConfig {
     pub fn bitget_account_data() -> Self {
         Self::new(WebSocketEndpoint::Bitget(
             BitgetWebSocketEndpoint::AccountData,
+        ))
+    }
+
+    pub fn bitstamp_market_data() -> Self {
+        Self::new(WebSocketEndpoint::Bitstamp(
+            BitstampWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn bitstamp_account_data() -> Self {
+        Self::new(WebSocketEndpoint::Bitstamp(
+            BitstampWebSocketEndpoint::AccountData,
         ))
     }
 
@@ -462,6 +496,18 @@ impl WebSocketClientConfig {
     pub fn kalshi_account_data() -> Self {
         Self::new(WebSocketEndpoint::Kalshi(
             KalshiWebSocketEndpoint::AccountData,
+        ))
+    }
+
+    pub fn kalshi_perps_market_data() -> Self {
+        Self::new(WebSocketEndpoint::KalshiPerps(
+            KalshiPerpsWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn kalshi_perps_account_data() -> Self {
+        Self::new(WebSocketEndpoint::KalshiPerps(
+            KalshiPerpsWebSocketEndpoint::AccountData,
         ))
     }
 }

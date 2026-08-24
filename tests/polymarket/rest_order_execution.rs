@@ -82,6 +82,7 @@ async fn main() {
                 },
                 price,
                 quantity: get_env_as_string("QUANTITY", ""),
+                ..Default::default()
             }),
         )
         .await

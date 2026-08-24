@@ -65,6 +65,7 @@ async fn main() {
                 side: OrderSide::Buy,
                 price,
                 quantity: get_env_as_string("QUANTITY", ""),
+                ..Default::default()
             }),
         )
         .await
