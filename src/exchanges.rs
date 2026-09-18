@@ -1,3 +1,5 @@
+pub mod aster_futures;
+pub mod aster_spot;
 pub mod binance_spot;
 pub mod binance_usds_margined_futures;
 pub mod bitget;

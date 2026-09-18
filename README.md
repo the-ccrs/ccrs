@@ -1,6 +1,7 @@
 # ccrs
 * A simple, unified Rust library for trading across crypto and prediction markets.
 * A unified API for multiple exchanges. Supported exchanges:
+  * [Aster](https://www.asterdex.com/en/referral/WaOZIq)
   * [Binance](https://accounts.maxweb.black/register?ref=1116718520)
   * [Bitget](https://bonus.bitget.com/0V0WA1)
   * [Bitstamp](https://www.bitstamp.net/)

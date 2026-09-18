@@ -67,6 +67,8 @@ pub enum Exchange {
     Okx,
     BinanceSpot,
     BinanceUsdsMarginedFutures,
+    AsterFutures,
+    AsterSpot,
     GateioSpotAndMargin,
     GateioPerpetualFutures,
     HtxSpot,
@@ -135,6 +137,8 @@ pub enum ExchangeInstrumentType {
     Okx(OkxInstrumentType),
     BinanceSpot,
     BinanceUsdsMarginedFutures,
+    AsterFutures,
+    AsterSpot,
     GateioSpotAndMargin(GateioSpotAndMarginInstrumentType),
     GateioPerpetualFutures,
     HtxSpot,
@@ -194,6 +198,22 @@ pub enum BinanceSpotWebSocketEndpoint {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum BinanceUsdsMarginedFuturesWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum AsterFuturesWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum AsterSpotWebSocketEndpoint {
     #[default]
     Unknown,
     MarketData,
@@ -291,6 +311,8 @@ pub enum WebSocketEndpoint {
     Coinbase(CoinbaseWebSocketEndpoint),
     BinanceSpot(BinanceSpotWebSocketEndpoint),
     BinanceUsdsMarginedFutures(BinanceUsdsMarginedFuturesWebSocketEndpoint),
+    AsterFutures(AsterFuturesWebSocketEndpoint),
+    AsterSpot(AsterSpotWebSocketEndpoint),
     GateioSpotAndMargin(GateioSpotAndMarginWebSocketEndpoint),
     GateioPerpetualFutures(GateioPerpetualFuturesWebSocketEndpoint),
     HtxSpot(HtxSpotWebSocketEndpoint),
@@ -388,6 +410,30 @@ impl WebSocketClientConfig {
     pub fn binance_usds_margined_futures_account_data() -> Self {
         Self::new(WebSocketEndpoint::BinanceUsdsMarginedFutures(
             BinanceUsdsMarginedFuturesWebSocketEndpoint::AccountData,
+        ))
+    }
+
+    pub fn aster_futures_market_data() -> Self {
+        Self::new(WebSocketEndpoint::AsterFutures(
+            AsterFuturesWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn aster_futures_account_data() -> Self {
+        Self::new(WebSocketEndpoint::AsterFutures(
+            AsterFuturesWebSocketEndpoint::AccountData,
+        ))
+    }
+
+    pub fn aster_spot_market_data() -> Self {
+        Self::new(WebSocketEndpoint::AsterSpot(
+            AsterSpotWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn aster_spot_account_data() -> Self {
+        Self::new(WebSocketEndpoint::AsterSpot(
+            AsterSpotWebSocketEndpoint::AccountData,
         ))
     }
 
