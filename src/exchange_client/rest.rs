@@ -1,5 +1,6 @@
 #[async_trait::async_trait]
 pub trait Rest {
+    #[allow(clippy::double_must_use)]
     async fn create_http_client(
         &self,
         http_config: crate::networking::http::HttpConfig,
@@ -36,6 +37,7 @@ pub trait Rest {
         unimplemented!()
     }
 
+    #[allow(clippy::double_must_use)]
     async fn prepare_place_order_http_request(
         &self,
         place_order_request: &crate::exchange_client::common::PlaceOrderRequest,
@@ -149,6 +151,7 @@ pub trait Rest {
         unimplemented!()
     }
 
+    #[allow(clippy::double_must_use)]
     async fn send_http_request(
         &self,
         http_client: &crate::networking::http::HttpClient,

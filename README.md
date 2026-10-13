@@ -7,6 +7,7 @@
   * [Bitstamp](https://www.bitstamp.net/)
   * [Bybit](https://www.bybit.com/invite?ref=XNYP2K)
   * [Coinbase](https://advanced.coinbase.com/join/CKGCX6U)
+  * [Crypto.com](https://crypto.com/app/tqj4b8x48w)
   * [Gate](https://www.gate.com/signup/VLUQXVFWAW?ref_type=103)
   * [HTX](https://www.htx.com/invite/en-us/1f?invite_code=rmw7d223)
   * [Hyperliquid](https://app.hyperliquid.xyz/)

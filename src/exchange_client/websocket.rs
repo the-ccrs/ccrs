@@ -1,5 +1,6 @@
 #[async_trait::async_trait]
 pub trait Websocket {
+    #[allow(clippy::double_must_use)]
     async fn create_websocket_client(
         &self,
         websocket_client_config: crate::types::WebSocketClientConfig,
@@ -30,6 +31,7 @@ pub trait Websocket {
 
     fn websocket_api_url(&self, endpoint: crate::types::WebSocketEndpoint) -> String;
 
+    #[allow(clippy::double_must_use)]
     async fn authenticate_websocket_connection(
         &self,
         client: &mut crate::networking::websocket::WebSocketClient,
@@ -78,6 +80,7 @@ pub trait Websocket {
         }
     }
 
+    #[allow(clippy::double_must_use)]
     async fn keep_websocket_client_alive(
         &self,
         heartbeat_interval_secs: u64,
@@ -155,6 +158,7 @@ pub trait Websocket {
         subscribe_fill_request: &crate::exchange_client::common::SubscribeFillRequest,
     ) -> String;
 
+    #[allow(clippy::double_must_use)]
     async fn send_websocket_request(
         &self,
         websocket_sender: &crate::networking::websocket::WebSocketSender,
@@ -193,6 +197,7 @@ pub trait Websocket {
         panic!()
     }
 
+    #[allow(clippy::double_must_use)]
     async fn handle_websocket_message(
         &self,
         websocket_client: &mut crate::networking::websocket::WebSocketClient,
@@ -231,6 +236,7 @@ pub trait Websocket {
         }
     }
 
+    #[allow(clippy::double_must_use)]
     async fn read_next_websocket_message(
         &self,
         websocket_client: &mut crate::networking::websocket::WebSocketClient,
@@ -254,6 +260,7 @@ pub trait Websocket {
         }
     }
 
+    #[allow(clippy::double_must_use)]
     async fn read_next_websocket_message_batch(
         &self,
         websocket_client: &mut crate::networking::websocket::WebSocketClient,

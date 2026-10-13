@@ -61,6 +61,7 @@ pub enum Exchange {
     Bitget,
     Bitstamp,
     Coinbase,
+    Cryptocom,
     Hyperliquid,
     KrakenDerivatives,
     KrakenSpot,
@@ -131,6 +132,7 @@ pub enum ExchangeInstrumentType {
     Bitget(BitgetInstrumentType),
     Bitstamp,
     Coinbase,
+    Cryptocom,
     Hyperliquid(HyperliquidInstrumentType),
     KrakenDerivatives,
     KrakenSpot,
@@ -277,6 +279,14 @@ pub enum KrakenSpotWebSocketEndpoint {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum CryptocomWebSocketEndpoint {
+    #[default]
+    Unknown,
+    MarketData,
+    AccountData,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum KrakenDerivativesWebSocketEndpoint {
     #[default]
     Unknown,
@@ -320,6 +330,7 @@ pub enum WebSocketEndpoint {
     Hyperliquid(HyperliquidWebSocketEndpoint),
     Polymarket(PolymarketWebSocketEndpoint),
     KrakenSpot(KrakenSpotWebSocketEndpoint),
+    Cryptocom(CryptocomWebSocketEndpoint),
     KrakenDerivatives(KrakenDerivativesWebSocketEndpoint),
     Kalshi(KalshiWebSocketEndpoint),
     KalshiPerps(KalshiPerpsWebSocketEndpoint),
@@ -518,6 +529,18 @@ impl WebSocketClientConfig {
     pub fn kraken_spot_account_data() -> Self {
         Self::new(WebSocketEndpoint::KrakenSpot(
             KrakenSpotWebSocketEndpoint::AccountData,
+        ))
+    }
+
+    pub fn cryptocom_market_data() -> Self {
+        Self::new(WebSocketEndpoint::Cryptocom(
+            CryptocomWebSocketEndpoint::MarketData,
+        ))
+    }
+
+    pub fn cryptocom_account_data() -> Self {
+        Self::new(WebSocketEndpoint::Cryptocom(
+            CryptocomWebSocketEndpoint::AccountData,
         ))
     }
 
