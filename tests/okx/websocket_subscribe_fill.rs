@@ -33,7 +33,7 @@ async fn main() {
 
     if use_demo_trading {
         okx_client_builder = okx_client_builder
-            .websocket_account_data_api_url("wss://wspap.okx.com:8443/ws/v5/private?brokerId=9999");
+            .websocket_account_data_api_url("wss://wspap.okx.com/ws/v5/private?brokerId=9999");
     }
 
     let okx_client = okx_client_builder

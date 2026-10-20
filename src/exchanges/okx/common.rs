@@ -277,12 +277,12 @@ impl OkxClientBuilder {
 
         let websocket_market_data_api_url = match self.websocket_market_data_api_url {
             Some(u) => u,
-            None => "wss://ws.okx.com:8443/ws/v5/public".to_string(),
+            None => "wss://ws.okx.com/ws/v5/public".to_string(),
         };
 
         let websocket_account_data_api_url = match self.websocket_account_data_api_url {
             Some(u) => u,
-            None => "wss://ws.okx.com:8443/ws/v5/private".to_string(),
+            None => "wss://ws.okx.com/ws/v5/private".to_string(),
         };
 
         let use_demo_trading = self.use_demo_trading.unwrap_or(false);
